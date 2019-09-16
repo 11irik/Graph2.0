@@ -1,5 +1,9 @@
 public class Program {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        Graph a = new Graph();
+        a.addNeighbour("hel", "llo");
+        a.addNeighbour("hel", "blo");
+
+        a.show();
     }
 }
