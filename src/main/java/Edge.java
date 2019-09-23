@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Edge {
     private Node from;
     private Node to;
