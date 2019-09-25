@@ -1,7 +1,7 @@
 public class Edge {
     private Node from;
     private Node to;
-    private Integer weight;
+    private int weight;
 
     public Edge(){
         from = new Node();
@@ -9,7 +9,7 @@ public class Edge {
         weight = 0;
     }
 
-    public Edge(Node a, Node b, Integer w){
+    public Edge(Node a, Node b, int w){
         from = a;
         to = b;
         weight = w;
