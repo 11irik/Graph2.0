@@ -2,9 +2,9 @@ package graph.model;
 
 import java.io.Serializable;
 
-public class Label implements Serializable {
-    int weitgh;
-    Boolean used;
+public class Label {
+    private int weitgh;
+    private Boolean used;
 
     Label() {
         weitgh = 0;

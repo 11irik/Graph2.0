@@ -2,8 +2,7 @@ package graph.view;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import model.Graph;
-import model.Node;
+import graph.model.Graph;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,14 +10,17 @@ import java.io.Writer;
 import java.util.Scanner;
 
 public class ConsoleInterface {
-    static Scanner in = new Scanner(System.in);
-    //Graph graph;
+    private Graph graph;
+    private static Scanner in = new Scanner(System.in);
+    private static String[] methodNames = {"Add node - 1", "Add edge - 2", "Remove node - 3", "Remove edge - 4", "Save - 5", "Show - 6", "Exit - 0"};
 
-    public ConsoleInterface(Graph g) {
-        graph = g;
+    public ConsoleInterface(Graph graph) {
+        this.graph = graph;
     }
 
-    static String[] methodNames = {"Add node - 1", "Add edge - 2", "Show nodes - 3", "Save - 4"};
+    public static void name() {
+        System.out.println("========Graph editor========");
+    }
 
     public static void help() {
         String s = "";
@@ -33,6 +35,8 @@ public class ConsoleInterface {
     }
 
     public void c() {
+        name();
+        help();
         int n = 1;
         while (n != 0) {
             System.out.println("Enter n: ");
@@ -40,24 +44,31 @@ public class ConsoleInterface {
             switch (n) {
                 case (1):
                     System.out.println("Enter node: ");
-                    String s = in.next();
-                    Node a = new Node(s);
-                    graph.addNode(a);
+                    graph.addNode(in.next());
                     break;
                 case (2):
-                    System.out.println("Enter node a and node b: ");
+                    System.out.println("Enter nodes a and b: ");
+                    graph.addEdge(in.next(), in.next());
                     break;
                 case (3):
-                    System.out.println(graph.getNodes());
+                    System.out.println("Enter node: ");
+                    graph.deleteNode(in.next());
                     break;
                 case (4):
+                    System.out.println("Enter nodes a and b: ");
+                    graph.deleteEdge(in.next(), in.next());
+                    break;
+                case (5):
                     try (Writer writer = new FileWriter("Output.json")) {
                         Gson gson = new GsonBuilder().create();
                         gson.toJson(graph, writer);
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
-                    System.out.println("Saved");
+                       }
+                    break;
+                case (6):
+                    System.out.println(graph.toString());
+                case (0):
                     break;
             }
         }

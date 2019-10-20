@@ -2,10 +2,10 @@ package graph.model;
 
 import java.io.Serializable;
 
-public class Node implements Serializable {
+public class Node {
     private String data;
 
-    public Node(){
+    Node(){
         data = "";
     }
 

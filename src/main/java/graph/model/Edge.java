@@ -2,7 +2,7 @@ package graph.model;
 
 import java.io.Serializable;
 
-public class Edge implements Serializable {
+public class Edge {
     private Node from;
     private Node to;
     private int weight;
