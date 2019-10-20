@@ -1,3 +1,5 @@
+package graph.model;
+
 import java.io.Serializable;
 
 public class Label implements Serializable {

@@ -1,7 +1,10 @@
+package graph.view;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import model.Graph;
+import model.Node;
 
-import java.io.Console;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -9,7 +12,7 @@ import java.util.Scanner;
 
 public class ConsoleInterface {
     static Scanner in = new Scanner(System.in);
-    Graph graph;
+    //Graph graph;
 
     public ConsoleInterface(Graph g) {
         graph = g;

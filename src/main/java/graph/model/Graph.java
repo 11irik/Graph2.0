@@ -1,5 +1,6 @@
+package graph.model;
+
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,7 @@ public class Graph implements Serializable {
 //    }
 
     public void addNode(Node a) {
+
         adjacencyList.put(a, new HashMap<Node, Label>());
     }
 
