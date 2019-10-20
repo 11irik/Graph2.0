@@ -1,4 +1,6 @@
-public class Node {
+import java.io.Serializable;
+
+public class Node implements Serializable {
     private String data;
 
     public Node(){
@@ -9,6 +11,7 @@ public class Node {
         data = s;
     }
 
+    @Override
     public String toString(){
         return data;
     }

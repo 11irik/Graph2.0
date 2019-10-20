@@ -1,19 +1,22 @@
+import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-public class Graph {
-    private HashMap<String, HashMap<String, Integer>> adjacencyList;
+public class Graph implements Serializable {
+    private HashMap<Node, HashMap<Node, Label>> adjacencyList;
     private Boolean isOriented;
     private Boolean isWeighted;
 
     public Graph() {
-        adjacencyList = new HashMap<String, HashMap<String, Integer>>();
+        adjacencyList = new HashMap<Node, HashMap<Node, Label>>();
         isOriented = false;
         isWeighted = false;
     }
 
     public Graph(Boolean Oriented, Boolean Weighted) {
-        adjacencyList = new HashMap<String, HashMap<String, Integer>>();
+        adjacencyList = new HashMap<Node, HashMap<Node, Label>>();
         this.isOriented = Oriented;
         this.isWeighted = Weighted;
     }
@@ -24,25 +27,30 @@ public class Graph {
         isWeighted = g.isWeighted;
     }
 
-    public void addNode(String a) {
-        adjacencyList.put(a, new HashMap<String, Integer>());
+    //TODO Constructor with file
+//    public Graph() {
+//
+//    }
+
+    public void addNode(Node a) {
+        adjacencyList.put(a, new HashMap<Node, Label>());
     }
 
-    public void deleteNode(String a) {
+    public void deleteNode(Node a) {
         adjacencyList.remove(a);
     }
 
-    public void addEdge(String a, String b) {
+    public void addEdge(Node a, Node b) {
         if(isOriented){
-            adjacencyList.get(a).put(b, 0);
-            adjacencyList.get(b).put(a, 0);
+            adjacencyList.get(a).put(b, new Label());
+            adjacencyList.get(b).put(a, new Label());
         }
         else {
-            adjacencyList.get(a).put(b, 0);
+            adjacencyList.get(a).put(b, new Label());
         }
     }
 
-    public void removeEdge(String a, String b){
+    public void removeEdge(Node a, Node b){
         if(isOriented) {
             adjacencyList.get(a).remove(b);
             adjacencyList.get(b).remove(a);
@@ -52,23 +60,36 @@ public class Graph {
         }
     }
 
+    public void save(Graph g) throws IOException {
+        FileOutputStream outputStream = new FileOutputStream("\\save.ser");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+
+        // сохраняем игру в файл
+        objectOutputStream.writeObject(g);
+
+        //закрываем поток и освобождаем ресурсы
+        objectOutputStream.close();
+    }
+
+    public Set getNodes() {
+        return adjacencyList.keySet();
+    }
+
+    @Override
     public String toString() {
         String s = "";
 
-        for(Map.Entry <String, HashMap<String, Integer>> entry : adjacencyList.entrySet()) {
-            String node = entry.getKey();
-            s += node + ";";
-            HashMap<String, Integer> value = entry.getValue();
-            for(Map.Entry <String, Integer> edge : value.entrySet()) {
-                String adjacency = edge.getKey();
-                int weight = edge.getValue();
-                s += adjacency + ";" + weight + ";";
+        for(Map.Entry<Node, HashMap<Node, Label>> entry : adjacencyList.entrySet()) {
+            String nodeStr = entry.getKey().toString();
+            s += nodeStr + ";";
+            HashMap<Node, Label> value = entry.getValue();
+            for(Map.Entry<Node, Label> edge : value.entrySet()) {
+                Node adjacency = edge.getKey();
+                String labelStr = edge.getValue().toString();
+                s += adjacency + ";" + labelStr;
             }
             s += "\n";
         }
         return s;
     }
-
-
-
 }
