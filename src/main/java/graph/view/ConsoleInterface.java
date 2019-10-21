@@ -56,7 +56,7 @@ public class ConsoleInterface {
                     break;
                 case (4):
                     System.out.println("Enter nodes a and b: ");
-                    graph.deleteEdge(in.next(), in.next());
+                    System.out.println(graph.deleteEdge(in.next(), in.next()));
                     break;
                 case (5):
                     try (Writer writer = new FileWriter("Output.json")) {

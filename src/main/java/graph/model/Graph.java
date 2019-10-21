@@ -25,7 +25,14 @@ public class Graph {
     }
 
     public Graph(Graph g) {
-        adjacencyList = new HashMap<>(g.adjacencyList);
+        adjacencyList = new HashMap<>();
+
+        for (String str : g.adjacencyList.keySet()) {
+            HashMap<String, Label> temp = new HashMap<>();
+            temp.putAll(g.adjacencyList.get(str));
+            this.adjacencyList.put(str, temp);
+        }
+
         isOriented = g.isOriented;
         isWeighted = g.isWeighted;
     }
@@ -52,28 +59,49 @@ public class Graph {
         }
     }
 
-    public void addEdge(String a, String b) {
+
+    //TODO проверка на дублирование
+    public boolean addEdge(String a, String b) {
         if (!(hasNode(a) && hasNode(b))) {
             throw new NullPointerException("There is no such a node");
         } else {
-            if (!isOriented) {
-                adjacencyList.get(a).put(b, new Label());
-                adjacencyList.get(b).put(a, new Label());
-            } else {
-                adjacencyList.get(a).put(b, new Label());
+            if (adjacencyList.get(a).containsKey(b)) {
+                return false;
+            }
+            else {
+                if (!isOriented) {
+                    adjacencyList.get(a).put(b, new Label());
+                    adjacencyList.get(b).put(a, new Label());
+                    return true;
+                } else {
+                    adjacencyList.get(a).put(b, new Label());
+                    return true;
+                }
             }
         }
     }
 
-    public void deleteEdge(String a, String b) {
+    //TODO проверка на существование
+    public boolean deleteEdge(String a, String b) {
         if (!(hasNode(a) && hasNode(b))) {
             throw new NullPointerException("There is no such a node");
         } else {
             if (!isOriented) {
-                adjacencyList.get(a).remove(b);
-                adjacencyList.get(b).remove(a);
-            } else {
-                adjacencyList.get(a).remove(b);
+                if (adjacencyList.get(a). containsKey(b)) {
+                    adjacencyList.get(a).remove(b);
+                    adjacencyList.get(b).remove(a);
+                    return true;
+                }
+                return false;
+            }
+            else {
+                if (adjacencyList.get(a). containsKey(b)) {
+                    adjacencyList.get(a).remove(b);
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
         }
     }
@@ -89,6 +117,7 @@ public class Graph {
         return nodes;
     }
 
+    //TODO task Ia(17) Wrong
     public boolean doesCallingExist(String a, String b) {
         if (!(hasNode(a) && hasNode(b))) {
             throw new NullPointerException("There is no such a node");
@@ -104,6 +133,35 @@ public class Graph {
                 return true;
             }
         }
+    }
+
+    public boolean doesIssueExist(String a, String b) {
+        if (!(hasNode(a) && hasNode(b))) {
+            throw new NullPointerException("There is no such a node");
+        } else {
+
+            for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
+                if (entry.getValue().containsKey(a) && entry.getValue().containsKey(b)) {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+    }
+
+    public Graph deleteOddEdges() {
+        Graph temp = new Graph(this);
+        for (Map.Entry<String, HashMap<String, Label>> entry : temp.adjacencyList.entrySet()) {
+            if (entry.getKey().length() % 2 == 0) {
+                for (String node: entry.getValue().keySet()) {
+                    if (node.length() % 2 == 0) {
+                        temp.deleteEdge(entry.getKey(), node);
+                    }
+                }
+            }
+        }
+        return temp;
     }
 
     @Override
