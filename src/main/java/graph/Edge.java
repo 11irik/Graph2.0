@@ -1,6 +1,4 @@
-package graph.model;
-
-import java.io.Serializable;
+package graph;
 
 public class Edge {
     private Node from;

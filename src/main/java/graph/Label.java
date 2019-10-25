@@ -1,4 +1,4 @@
-package graph.model;
+package graph;
 
 import java.io.Serializable;
 

@@ -1,8 +1,5 @@
 package graph;
 
-import graph.view.ConsoleGInterface;
-import graph.view.ConsoleInterface;
-
 import java.io.FileNotFoundException;
 
 public class Program {

@@ -1,6 +1,5 @@
-package graph.model;
+package graph;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

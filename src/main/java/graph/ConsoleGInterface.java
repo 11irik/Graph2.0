@@ -1,8 +1,7 @@
-package graph.view;
+package graph;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import graph.model.Graph;
 
 import java.io.*;
 import java.util.Scanner;
