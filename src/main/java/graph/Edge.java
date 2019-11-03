@@ -1,23 +1,28 @@
 package graph;
 
-public class Edge<T> {
-    private T from;
-    private T to;
-    private int weight;
+public class Edge {
+    private String from;
+    private String to;
+    private double weight;
 
     public Edge(){
-        weight = 0;
+        weight = 0;;
     }
 
-    public Edge(T a, T b, int w){
+    public Edge(String a, String b, double w){
         from = a;
         to = b;
         weight = w;
     }
 
-    public Edge(T a, T b){
+    public Edge(String a, String b){
         from = a;
         to = b;
         weight = 0;
+    }
+
+    @Override
+    public java.lang.String toString() {
+        return from + ";" + to + ";" + weight + ";";
     }
 }

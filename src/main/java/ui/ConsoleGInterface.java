@@ -1,11 +1,10 @@
-package graph;
+package ui;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import graph.Graph;
 
-import javax.lang.model.type.NullType;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.Scanner;
 
 public class ConsoleGInterface {
@@ -111,9 +110,13 @@ public class ConsoleGInterface {
                     System.out.println("Enter nodes a and b: ");
                     System.out.println(graph.doesCallingExist(in.next(), in.next()));
                     break;
-
                 case (12):
                     System.out.println(graph.deleteOddEdges());
+                    break;
+                case (13):
+                    graph.convertIntoEdges();
+                    break;
+
             }
         }
     }

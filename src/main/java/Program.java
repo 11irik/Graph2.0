@@ -1,4 +1,4 @@
-package graph;
+import ui.ConsoleGInterface;
 
 import java.io.FileNotFoundException;
 

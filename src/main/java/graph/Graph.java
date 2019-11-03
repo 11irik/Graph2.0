@@ -1,6 +1,5 @@
 package graph;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,38 +37,42 @@ public class Graph {
         isWeighted = g.isWeighted;
     }
 
-    //TODO Constructor with file
-    //TODO test commit
-//    public Graph() {
-//
-//    }
+    public boolean isWeighted() {
+        return isWeighted;
+    }
 
-    public void addNode(String a) {
-
-        adjacencyList.put(a, new HashMap<String, Label>());
+    public boolean addNode(String a) {
+        if (adjacencyList.containsKey(a)) {
+            return false;
+        } else {
+            adjacencyList.put(a, new HashMap<String, Label>());
+            return true;
+        }
     }
 
     public boolean hasNode(String a) {
         return adjacencyList.containsKey(a);
     }
 
-    public void deleteNode(String a) {
-        adjacencyList.remove(a);
-
-        for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
-            entry.getValue().remove(a);
+    public boolean deleteNode(String a) {
+        if (!adjacencyList.containsKey(a)) {
+            return false;
+        } else {
+            adjacencyList.remove(a);
+            for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
+                entry.getValue().remove(a);
+            }
+            return true;
         }
     }
 
-    //TODO проверка на дублирование
     public boolean addEdge(String a, String b) {
         if (!(hasNode(a) && hasNode(b))) {
-            throw new NullPointerException("There is no such a node");
+            throw new NullPointerException("There is no such node");
         } else {
             if (adjacencyList.get(a).containsKey(b)) {
                 return false;
-            }
-            else {
+            } else {
                 if (!isOriented) {
                     adjacencyList.get(a).put(b, new Label());
                     adjacencyList.get(b).put(a, new Label());
@@ -82,87 +85,50 @@ public class Graph {
         }
     }
 
-    //TODO проверка на существование
+    public boolean addEdge(String a, String b, double weight) {
+        if (!isWeighted) {
+            //todo exception
+            throw new NullPointerException("Graph is not weighted");
+        } else {
+            if (!(hasNode(a) && hasNode(b))) {
+                throw new NullPointerException("There is no such node");
+            } else {
+                if (adjacencyList.get(a).containsKey(b)) {
+                    return false;
+                } else {
+                    if (!isOriented) {
+                        adjacencyList.get(a).put(b, new Label(weight));
+                        adjacencyList.get(b).put(a, new Label(weight));
+                        return true;
+                    } else {
+                        adjacencyList.get(a).put(b, new Label(weight));
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
     public boolean deleteEdge(String a, String b) {
         if (!(hasNode(a) && hasNode(b))) {
-            throw new NullPointerException("There is no such a node");
+            throw new NullPointerException("There is no such node");
         } else {
             if (!isOriented) {
-                if (adjacencyList.get(a). containsKey(b)) {
+                if (adjacencyList.get(a).containsKey(b)) {
                     adjacencyList.get(a).remove(b);
                     adjacencyList.get(b).remove(a);
                     return true;
                 }
                 return false;
-            }
-            else {
-                if (adjacencyList.get(a). containsKey(b)) {
+            } else {
+                if (adjacencyList.get(a).containsKey(b)) {
                     adjacencyList.get(a).remove(b);
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
             }
         }
-    }
-
-    //TODO task Ia(6)
-    public ArrayList<String> getZeros() {
-        ArrayList <String> nodes = new ArrayList<>();
-        for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
-            if (entry.getValue().size() == 0) {
-                nodes.add(entry.getKey());
-            }
-        }
-        return nodes;
-    }
-
-    //TODO task Ia(17) Wrong
-    public boolean doesCallingExist(String a, String b) {
-        if (!(hasNode(a) && hasNode(b))) {
-            throw new NullPointerException("There is no such a node");
-        } else {
-            Set<String> aSet = adjacencyList.get(a).keySet();
-            Set<String> bSet = adjacencyList.get(b).keySet();
-            aSet.retainAll(bSet);
-            System.out.println(aSet);
-            if (aSet.size() == 0) {
-                return false;
-            }
-            else{
-                return true;
-            }
-        }
-    }
-
-    public boolean doesIssueExist(String a, String b) {
-        if (!(hasNode(a) && hasNode(b))) {
-            throw new NullPointerException("There is no such a node");
-        } else {
-
-            for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
-                if (entry.getValue().containsKey(a) && entry.getValue().containsKey(b)) {
-                    return true;
-                }
-            }
-            return false;
-
-        }
-    }
-
-    public Graph deleteOddEdges() {
-        Graph temp = new Graph(this);
-        for (Map.Entry<String, HashMap<String, Label>> entry : temp.adjacencyList.entrySet()) {
-            if (entry.getKey().toString().length() % 2 == 0) {
-                for (String node: entry.getValue().keySet()) {
-                    if (node.toString().length() % 2 == 0) {
-                        temp.deleteEdge(entry.getKey(), node);
-                    }
-                }
-            }
-        }
-        return temp;
     }
 
     @Override
@@ -182,4 +148,96 @@ public class Graph {
         }
         return s;
     }
+    //----------------------------TASKS--------------------------------
+
+    //task Ia(6)
+    public ArrayList<String> getZeros() {
+        ArrayList<String> nodes = new ArrayList<>();
+        for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
+            if (entry.getValue().size() == 0) {
+                nodes.add(entry.getKey());
+            }
+        }
+        return nodes;
+    }
+
+    //task Ia(17) Wrong
+    public boolean doesCallingExist(String a, String b) {
+        if (!(hasNode(a) && hasNode(b))) {
+            throw new NullPointerException("There is no such a node");
+        } else {
+            Set<String> aSet = adjacencyList.get(a).keySet();
+            Set<String> bSet = adjacencyList.get(b).keySet();
+            aSet.retainAll(bSet);
+            System.out.println(aSet);
+            if (aSet.size() == 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    //task Ia(17)
+    public boolean doesIssueExist(String a, String b) {
+        if (!(hasNode(a) && hasNode(b))) {
+            throw new NullPointerException("There is no such a node");
+        } else {
+
+            for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
+                if (entry.getValue().containsKey(a) && entry.getValue().containsKey(b)) {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+    }
+
+    //task Ib(8)
+    public Graph deleteOddEdges() {
+        Graph temp = new Graph(this);
+        for (Map.Entry<String, HashMap<String, Label>> entry : temp.adjacencyList.entrySet()) {
+            if (entry.getKey().toString().length() % 2 == 0) {
+                for (String node : entry.getValue().keySet()) {
+                    if (node.toString().length() % 2 == 0) {
+                        temp.deleteEdge(entry.getKey(), node);
+                    }
+                }
+            }
+        }
+        return temp;
+    }
+
+    //task II(23)
+
+    public ArrayList<Edge> convertIntoEdges() {
+        ArrayList<Edge> edges = new ArrayList<Edge>();
+        Graph temp = new Graph(this);
+
+        if (isOriented) {
+            for (Map.Entry<String, HashMap<String, Label>> from : temp.adjacencyList.entrySet()) {
+                for (Map.Entry<String, Label> to : from.getValue().entrySet()) {
+                    edges.add(new Edge(from.getKey(), to.getKey(), to.getValue().getWeight()));
+                }
+            }
+        }
+        else {
+            ArrayList<String> usedNodes = new ArrayList<>();
+            for (Map.Entry<String, HashMap<String, Label>> from : temp.adjacencyList.entrySet()) {
+                for (Map.Entry<String, Label> to : from.getValue().entrySet()) {
+                    if (!usedNodes.contains(to.getKey()))
+                        edges.add(new Edge(from.getKey(), to.getKey(), to.getValue().getWeight()));
+                }
+                usedNodes.add(from.getKey().toString());
+            }
+        }
+        return edges;
+    }
+
+    //task II(B)
+    public void boruvka() {
+
+    }
+
 }

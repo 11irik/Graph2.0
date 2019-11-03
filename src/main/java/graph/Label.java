@@ -3,7 +3,7 @@ package graph;
 import java.io.Serializable;
 
 public class Label {
-    private int weight;
+    private double weight;
     private Boolean used;
 
     Label() {
@@ -11,11 +11,15 @@ public class Label {
         used = false;
     }
 
-    public int getWeight() {
+    Label(double weight) {
+        this.weight = weight;
+    }
+
+    public double getWeight() {
         return this.weight;
     }
 
-    public void setWeitgh(int weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

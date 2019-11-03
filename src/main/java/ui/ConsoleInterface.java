@@ -1,4 +1,4 @@
-package graph;
+package ui;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -47,8 +47,14 @@ public class ConsoleInterface {
                     graph.addNode(in.next());
                     break;
                 case (2):
-                    System.out.println("Enter nodes a and b: ");
-                    graph.addEdge(in.next(), in.next());
+                    if (graph.isWeighted()) {
+                        System.out.println("Enter nodes a, b and weight: ");
+                        graph.addEdge(in.next(), in.next(), in.nextDouble());
+                    }
+                    else{
+                        System.out.println("Enter nodes a and b: ");
+                        graph.addEdge(in.next(), in.next());
+                    }
                     break;
                 case (3):
                     System.out.println("Enter node: ");
