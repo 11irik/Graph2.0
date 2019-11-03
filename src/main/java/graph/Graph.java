@@ -1,36 +1,37 @@
 package graph;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Graph<T> {
+public class Graph {
     private static int count = 0;
     private Boolean isOriented;
     private Boolean isWeighted;
-    private HashMap<T, HashMap<T, Label>> adjacencyList;
+    private HashMap<String, HashMap<String, Label>> adjacencyList;
 
     public Graph() {
-        adjacencyList = new HashMap<T, HashMap<T, Label>>();
+        adjacencyList = new HashMap<String, HashMap<String, Label>>();
         isOriented = false;
         isWeighted = false;
     }
 
     public Graph(Boolean Oriented, Boolean Weighted) {
-        adjacencyList = new HashMap<T, HashMap<T, Label>>();
+
+        adjacencyList = new HashMap<String, HashMap<String, Label>>();
         this.isOriented = Oriented;
         this.isWeighted = Weighted;
     }
 
-    public Graph(Graph<? extends T> g) {
-
+    public Graph(Graph g) {
         adjacencyList = new HashMap<>();
 
-        for (T key : g.adjacencyList.keySet()) {
-            HashMap<T, Label> temp = new HashMap<>();
+        for (String key : g.adjacencyList.keySet()) {
+            HashMap<String, Label> temp = new HashMap<>();
             temp.putAll(g.adjacencyList.get(key));
-            this.adjacencyList.put((T) key, temp);
+            this.adjacencyList.put((String) key, temp);
         }
 
         isOriented = g.isOriented;
@@ -43,26 +44,25 @@ public class Graph<T> {
 //
 //    }
 
-    public void addNode(T a) {
+    public void addNode(String a) {
 
-        adjacencyList.put(a, new HashMap<T, Label>());
+        adjacencyList.put(a, new HashMap<String, Label>());
     }
 
-    public boolean hasNode(T a) {
+    public boolean hasNode(String a) {
         return adjacencyList.containsKey(a);
     }
 
-    public void deleteNode(T a) {
+    public void deleteNode(String a) {
         adjacencyList.remove(a);
 
-        for (Map.Entry<T, HashMap<T, Label>> entry : adjacencyList.entrySet()) {
+        for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
             entry.getValue().remove(a);
         }
     }
 
-
     //TODO проверка на дублирование
-    public boolean addEdge(T a, T b) {
+    public boolean addEdge(String a, String b) {
         if (!(hasNode(a) && hasNode(b))) {
             throw new NullPointerException("There is no such a node");
         } else {
@@ -83,7 +83,7 @@ public class Graph<T> {
     }
 
     //TODO проверка на существование
-    public boolean deleteEdge(T a, T b) {
+    public boolean deleteEdge(String a, String b) {
         if (!(hasNode(a) && hasNode(b))) {
             throw new NullPointerException("There is no such a node");
         } else {
@@ -108,9 +108,9 @@ public class Graph<T> {
     }
 
     //TODO task Ia(6)
-    public ArrayList<T> getZeros() {
-        ArrayList <T> nodes = new ArrayList<>();
-        for (Map.Entry<T, HashMap<T, Label>> entry : adjacencyList.entrySet()) {
+    public ArrayList<String> getZeros() {
+        ArrayList <String> nodes = new ArrayList<>();
+        for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
             if (entry.getValue().size() == 0) {
                 nodes.add(entry.getKey());
             }
@@ -119,12 +119,12 @@ public class Graph<T> {
     }
 
     //TODO task Ia(17) Wrong
-    public boolean doesCallingExist(T a, T b) {
+    public boolean doesCallingExist(String a, String b) {
         if (!(hasNode(a) && hasNode(b))) {
             throw new NullPointerException("There is no such a node");
         } else {
-            Set<T> aSet = adjacencyList.get(a).keySet();
-            Set<T> bSet = adjacencyList.get(b).keySet();
+            Set<String> aSet = adjacencyList.get(a).keySet();
+            Set<String> bSet = adjacencyList.get(b).keySet();
             aSet.retainAll(bSet);
             System.out.println(aSet);
             if (aSet.size() == 0) {
@@ -136,12 +136,12 @@ public class Graph<T> {
         }
     }
 
-    public boolean doesIssueExist(T a, T b) {
+    public boolean doesIssueExist(String a, String b) {
         if (!(hasNode(a) && hasNode(b))) {
             throw new NullPointerException("There is no such a node");
         } else {
 
-            for (Map.Entry<T, HashMap<T, Label>> entry : adjacencyList.entrySet()) {
+            for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
                 if (entry.getValue().containsKey(a) && entry.getValue().containsKey(b)) {
                     return true;
                 }
@@ -151,11 +151,11 @@ public class Graph<T> {
         }
     }
 
-    public Graph<T> deleteOddEdges() {
-        Graph<T> temp = new Graph<T>(this);
-        for (Map.Entry<T, HashMap<T, Label>> entry : temp.adjacencyList.entrySet()) {
+    public Graph deleteOddEdges() {
+        Graph temp = new Graph(this);
+        for (Map.Entry<String, HashMap<String, Label>> entry : temp.adjacencyList.entrySet()) {
             if (entry.getKey().toString().length() % 2 == 0) {
-                for (T node: entry.getValue().keySet()) {
+                for (String node: entry.getValue().keySet()) {
                     if (node.toString().length() % 2 == 0) {
                         temp.deleteEdge(entry.getKey(), node);
                     }
@@ -166,17 +166,17 @@ public class Graph<T> {
     }
 
     @Override
-    public String toString() {
-        String s = "";
+    public java.lang.String toString() {
+        java.lang.String s = "";
 
-        for (Map.Entry<T, HashMap<T, Label>> entry : adjacencyList.entrySet()) {
-            String nodeStr = entry.getKey().toString();
+        for (Map.Entry<String, HashMap<String, Label>> entry : adjacencyList.entrySet()) {
+            java.lang.String nodeStr = entry.getKey();
             s += nodeStr + ";";
-            HashMap<T, Label> value = entry.getValue();
-            for (Map.Entry<T, Label> edge : value.entrySet()) {
-                T adjacency = edge.getKey();
-                String labelStr = edge.getValue().toString();
-                s += adjacency.toString() + ";" + labelStr;
+            HashMap<String, Label> value = entry.getValue();
+            for (Map.Entry<String, Label> edge : value.entrySet()) {
+                String adjacency = edge.getKey();
+                java.lang.String labelStr = edge.getValue().toString();
+                s += adjacency + ";" + labelStr;
             }
             s += "\n";
         }

@@ -3,7 +3,9 @@ package graph;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javax.lang.model.type.NullType;
 import java.io.*;
+import java.lang.reflect.Type;
 import java.util.Scanner;
 
 public class ConsoleGInterface {
@@ -101,8 +103,6 @@ public class ConsoleGInterface {
                     name();
                     help();
                     break;
-
-
                     //Tasks
                 case (10):
                     System.out.println(graph.getZeros());

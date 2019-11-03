@@ -3,20 +3,20 @@ package graph;
 import java.io.Serializable;
 
 public class Label {
-    private int weitgh;
+    private int weight;
     private Boolean used;
 
     Label() {
-        weitgh = 0;
+        weight = 0;
         used = false;
     }
 
-    public int getWeitgh() {
-        return this.weitgh;
+    public int getWeight() {
+        return this.weight;
     }
 
-    public void setWeitgh(int weitgh) {
-        this.weitgh = weitgh;
+    public void setWeitgh(int weight) {
+        this.weight = weight;
     }
 
     public boolean isUsed() {
@@ -29,6 +29,6 @@ public class Label {
 
     @Override
     public String toString() {
-        return weitgh + ";" + used + ";";
+        return weight + ";" + used + ";";
     }
 }
