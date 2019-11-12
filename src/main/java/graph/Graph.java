@@ -144,6 +144,10 @@ public class Graph {
         }
     }
 
+    public Set<Node> getNodes() {
+        return adjacencyList.keySet();
+    }
+
     @Override
     public java.lang.String toString() {
         StringBuilder s = new StringBuilder();
