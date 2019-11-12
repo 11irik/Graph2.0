@@ -23,8 +23,6 @@ public class GraphPanel extends JPanel {
         graph.addEdge(graph.getNode("5"), graph.getNode("2"));
         graph.addEdge(graph.getNode("6"), graph.getNode("2"));
         graph.addEdge(graph.getNode("5"), graph.getNode("11"));
-
-
     }
 
     @Override
@@ -32,7 +30,6 @@ public class GraphPanel extends JPanel {
         super.paintComponent(g);
         float regularWidth = 0.5f;
         graph.getNodes().forEach(node -> drawNode(g, node));
-
     }
 
     private void drawNode(Graphics g, Node node) {
