@@ -1,28 +1,28 @@
 package graph;
 
 public class Edge {
-    private String from;
-    private String to;
+    private Node start;
+    private Node end;
     private double weight;
 
     public Edge(){
-        weight = 0;;
+        weight = 0;
     }
 
-    public Edge(String a, String b, double w){
-        from = a;
-        to = b;
-        weight = w;
+    public Edge(Node startNode, Node endNode, double weight){
+        start = startNode;
+        end = endNode;
+        this.weight = weight;
     }
 
-    public Edge(String a, String b){
-        from = a;
-        to = b;
+    public Edge(Node startNode, Node endNode){
+        start = startNode;
+        end = endNode;
         weight = 0;
     }
 
     @Override
     public java.lang.String toString() {
-        return from + ";" + to + ";" + weight + ";";
+        return "" + start + ";" + end + ";" + weight + ";";
     }
 }

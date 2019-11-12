@@ -44,25 +44,25 @@ public class ConsoleInterface {
             switch (n) {
                 case (1):
                     System.out.println("Enter node: ");
-                    graph.addNode(in.next());
+                   // graph.addNode(in.next());
                     break;
                 case (2):
                     if (graph.isWeighted()) {
                         System.out.println("Enter nodes a, b and weight: ");
-                        graph.addEdge(in.next(), in.next(), in.nextDouble());
+                       // graph.addEdge(in.next(), in.next(), in.nextDouble());
                     }
                     else{
                         System.out.println("Enter nodes a and b: ");
-                        graph.addEdge(in.next(), in.next());
+                       // graph.addEdge(in.next(), in.next());
                     }
                     break;
                 case (3):
                     System.out.println("Enter node: ");
-                    graph.deleteNode(in.next());
+                   // graph.deleteNode(in.next());
                     break;
                 case (4):
                     System.out.println("Enter nodes a and b: ");
-                    System.out.println(graph.deleteEdge(in.next(), in.next()));
+                   // System.out.println(graph.deleteEdge(in.next(), in.next()));
                     break;
                 case (5):
                     try (Writer writer = new FileWriter("Output.json")) {

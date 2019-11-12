@@ -1,11 +1,16 @@
+package ui;
+
+import graph.Graph;
+import graph.Node;
 import ui.ConsoleGInterface;
 
 import java.io.FileNotFoundException;
 
-public class Program {
+public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         ConsoleGInterface gInterface = new ConsoleGInterface();
-        gInterface.help();
+        ConsoleGInterface.help();
         gInterface.c();
     }
+
 }

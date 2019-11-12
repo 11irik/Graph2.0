@@ -46,25 +46,15 @@ public class ConsoleGInterface {
                     System.out.println("Oriented - y/n:");
                     Boolean oriented;
                     String v = in.next();
-                    if(v.equals("y")) {
-                        oriented = true;
-                    }
-                    else {
-                        oriented = false;
-                    }
+                    oriented = v.equals("y");
                     System.out.println("Weighted - y/n:");
                     Boolean weighted;
-                    if(in.next().equals("y")) {
-                        weighted = true;
-                    }
-                    else {
-                        weighted = false;
-                    }
+                    weighted = in.next().equals("y");
                     graph = new Graph(oriented, weighted);
                     break;
                 case (2):
                     System.out.println("Enter file name");
-                    try (Reader reader = new FileReader(in.next());) {
+                    try (Reader reader = new FileReader(in.next())) {
                         graph = gson.fromJson(reader, Graph.class);
                     } catch (IOException e) {
                         System.out.println(e.getMessage());
@@ -74,7 +64,7 @@ public class ConsoleGInterface {
                     }
                     break;
                 case (3):
-                    System.out.println("Enter file name");;
+                    System.out.println("Enter file name");
                     try (Writer writer = new FileWriter(in.next())) {
                         gson.toJson(graph, writer);
                     } catch (IOException e) {
@@ -108,7 +98,7 @@ public class ConsoleGInterface {
                     break;
                 case (11):
                     System.out.println("Enter nodes a and b: ");
-                    System.out.println(graph.doesCallingExist(in.next(), in.next()));
+                    //System.out.println(graph.doesCallingExist(in.next(), in.next()));
                     break;
                 case (12):
                     System.out.println(graph.deleteOddEdges());
