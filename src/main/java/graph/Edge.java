@@ -21,6 +21,14 @@ public class Edge {
         weight = 0;
     }
 
+    public Node getStart() {
+        return start;
+    }
+
+    public Node getEnd() {
+        return end;
+    }
+
     @Override
     public java.lang.String toString() {
         return "" + start + ";" + end + ";" + weight + ";";

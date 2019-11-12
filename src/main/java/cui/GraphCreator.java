@@ -1,4 +1,4 @@
-package ui;
+package cui;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,14 +7,14 @@ import graph.Graph;
 import java.io.*;
 import java.util.Scanner;
 
-public class ConsoleGInterface {
+public class GraphCreator {
     Graph graph;
-    private ConsoleInterface cInterface;
+    private GraphSettings cInterface;
 
     private static Scanner in = new Scanner(System.in);
     private static String[] methodNames = {"Create graph - 1", "Deserialize - 2", "Serialize - 3", "Show graph - 4", "Graph editor - 5"};
 
-    public ConsoleGInterface() {
+    public GraphCreator() {
     }
 
     public static void name() {
@@ -82,7 +82,7 @@ public class ConsoleGInterface {
                     break;
                 case (5):
                     try {
-                        cInterface = new ConsoleInterface(graph);
+                        cInterface = new GraphSettings(graph);
                         cInterface.c();
                     }
                     catch (NullPointerException e) {

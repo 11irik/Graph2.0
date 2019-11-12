@@ -1,4 +1,4 @@
-package ui;
+package cui;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Scanner;
 
-public class ConsoleInterface {
+public class GraphSettings {
     private Graph graph;
     private static Scanner in = new Scanner(System.in);
     private static String[] methodNames = {"Add node - 1", "Add edge - 2", "Remove node - 3", "Remove edge - 4", "Save - 5", "Show - 6", "Exit - 0"};
 
-    public ConsoleInterface(Graph graph) {
+    public GraphSettings(Graph graph) {
         this.graph = graph;
     }
 
@@ -65,7 +65,7 @@ public class ConsoleInterface {
                    // System.out.println(graph.deleteEdge(in.next(), in.next()));
                     break;
                 case (5):
-                    try (Writer writer = new FileWriter("Output.json")) {
+                    try (Writer writer = new FileWriter("test.json")) {
                         Gson gson = new GsonBuilder().create();
                         gson.toJson(graph, writer);
                     } catch (IOException e) {

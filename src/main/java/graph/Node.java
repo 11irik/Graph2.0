@@ -14,8 +14,8 @@ public class Node {
         this.key = key;
         used = false;
         Random random = new Random();
-        x = random.nextInt(500);
-        y = random.nextInt(500);
+        x = random.nextInt(100000);
+        y = random.nextInt(100000);
     }
 
     public Node(Node node) {
@@ -33,6 +33,14 @@ public class Node {
 
     public int getY() {
         return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     @Override

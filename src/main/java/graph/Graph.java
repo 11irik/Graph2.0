@@ -225,8 +225,8 @@ public class Graph {
     //task II(23)
 
     public ArrayList<Edge> convertIntoEdges() {
-        ArrayList<Edge> edges = new ArrayList<Edge>();
-        Graph temp = new Graph(this);
+        ArrayList<Edge> edges = new ArrayList<>();
+        Graph temp = this; //Todo constructor copy
 
         if (isOriented) {
             for (Map.Entry<Node, HashMap<Node, Double>> from : temp.adjacencyList.entrySet()) {
