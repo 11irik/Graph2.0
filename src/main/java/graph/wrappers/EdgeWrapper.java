@@ -1,7 +1,6 @@
-package gui;
+package graph.wrappers;
 
 import graph.Edge;
-import graph.Node;
 
 import java.util.ArrayList;
 

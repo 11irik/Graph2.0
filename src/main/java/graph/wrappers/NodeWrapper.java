@@ -1,8 +1,6 @@
-package gui;
+package graph.wrappers;
 
 import graph.Node;
-
-import java.util.Random;
 
 public class NodeWrapper {
     private Node node;
