@@ -29,6 +29,22 @@ public class Edge {
         return end;
     }
 
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setStart(Node node) {
+        this.start = node;
+    }
+
+    public void setEnd(Node node) {
+        this.end = node;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
     @Override
     public java.lang.String toString() {
         return "" + start + ";" + end + ";" + weight + ";";

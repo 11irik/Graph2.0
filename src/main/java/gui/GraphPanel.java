@@ -7,12 +7,16 @@ import graph.Node;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class GraphPanel extends JPanel implements MouseListener, MouseMotionListener {
     protected Graph graph;
     int nodeSize;
     double aspect;
     int random = 100000; //value of random in node
+    ArrayList<EdgeWrapper> edges;
+    ArrayList<NodeWrapper> nodes;
 
 
     public GraphPanel() {
@@ -27,20 +31,29 @@ public class GraphPanel extends JPanel implements MouseListener, MouseMotionList
         graph.addEdge(graph.getNode("5"), graph.getNode("2"));
         graph.addEdge(graph.getNode("6"), graph.getNode("2"));
         graph.addEdge(graph.getNode("5"), graph.getNode("11"));
+
+        edges = new ArrayList<>();
+        nodes = new ArrayList<>();
+
+        Random random = new Random();
+        graph.getNodes().forEach(node -> nodes.add(new NodeWrapper(node, random.nextInt(100000), random.nextInt(100000))));
+        graph.convertIntoEdges().forEach(edge -> edges.add(new EdgeWrapper(edge, nodes)));
+
         addMouseListener(this);
         addMouseMotionListener(this);
     }
 
-    private void drawNode(Graphics g, Node node) {
+    private void drawNode(Graphics g, NodeWrapper node) {
         g.setColor(Color.BLUE);
         aspect = Math.min(g.getClipBounds().height, g.getClipBounds().width);
         nodeSize = (int) aspect / 8; // 1/8 of minimal side, can be any value
         g.fillOval((int) (node.getX() * aspect / random - nodeSize/2), (int) (node.getY() * aspect / random  - nodeSize/2), nodeSize, nodeSize);
         g.setColor(Color.BLACK);
+        g.drawOval((int) (node.getX() * aspect / random - nodeSize/2), (int) (node.getY() * aspect / random  - nodeSize/2), nodeSize, nodeSize);
         g.drawString("" + node.getKey(), (int) (node.getX() * aspect / random), (int) (node.getY() * aspect / random));
     }
 
-    public void drawEdge(Graphics g, Edge edge) {
+    public void drawEdge(Graphics g, EdgeWrapper edge) {
         double w = Math.min(g.getClipBounds().height, g.getClipBounds().width);
 
         g.setColor(Color.BLACK);
@@ -49,20 +62,20 @@ public class GraphPanel extends JPanel implements MouseListener, MouseMotionList
     }
 
     boolean isChosed = false;
-    Node chosenNode;
+    NodeWrapper chosenNode;
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        graph.convertIntoEdges().forEach(edge -> drawEdge(g, edge));
-        graph.getNodes().forEach(node -> drawNode(g, node));
+        edges.forEach(edge -> drawEdge(g, edge));
+        nodes.forEach(node -> drawNode(g, node));
     }
 
-    private Node getClickedNodeFromCoords(int x, int y) {
-        Node node = null;
-        for (Node n : graph.getNodes()) {
-            if (Math.abs(n.getX() * aspect / random - x) < nodeSize &&
-                    Math.abs(n.getY() * aspect / random - y) < nodeSize) {
+    private NodeWrapper getClickedNodeFromCoords(int x, int y) {
+        NodeWrapper node = null;
+        for (NodeWrapper n : nodes) {
+            if (Math.abs(n.getX() * aspect / random - x) < nodeSize/2 &&
+                    Math.abs(n.getY() * aspect / random - y) < nodeSize/2) {
                 node = n;
             }
         }

@@ -16,12 +16,11 @@ public class Start extends JFrame {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension dimension = toolkit.getScreenSize();
         setBounds(dimension.width/8, dimension.height/8, dimension.width/4, dimension.height/2);
-
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
         GraphPanel panel = new GraphPanel();
         add(panel);
         setVisible(true);
-
     }
 
     public static void main(String[] args) {
