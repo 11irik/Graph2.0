@@ -1,58 +1,67 @@
 package graph;
 
-import javax.xml.crypto.dom.DOMCryptoContext;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Graph {
     private static int count = 0;
-    private Boolean isOriented;
-    private Boolean isWeighted;
+    private Boolean oriented;
+    private Boolean weighted;
     private HashMap<Node, HashMap<Node, Double>> adjacencyList;
+    private ArrayList<Edge> edges;
 
     public Graph() {
         adjacencyList = new HashMap<>();
-        isOriented = false;
-        isWeighted = false;
+        oriented = false;
+        weighted = false;
     }
 
     public Graph(Boolean Oriented, Boolean Weighted) {
-
         adjacencyList = new HashMap<>();
-        this.isOriented = Oriented;
-        this.isWeighted = Weighted;
+        this.oriented = Oriented;
+        this.weighted = Weighted;
     }
 
     public Graph(Graph graph) {
         adjacencyList = new HashMap<>();
-        isOriented = graph.isOriented;
-        isWeighted = graph.isWeighted;
+        oriented = graph.oriented;
+        weighted = graph.weighted;
+
+        for (Node key : graph.adjacencyList.keySet()) {
+            this.adjacencyList.put(new Node(key), new HashMap<>());
+        }
+    }
+
+    public Graph(Graph graph, boolean copyEdges) {
+        adjacencyList = new HashMap<>();
+        oriented = graph.oriented;
+        weighted = graph.weighted;
 
         for (Node key : graph.adjacencyList.keySet()) {
             this.adjacencyList.put(new Node(key), new HashMap<>());
         }
 
-        for (Node key : this.adjacencyList.keySet()) {
-            for (Node value : this.adjacencyList.keySet()) {
-                if (graph.adjacencyList.get(graph.getNode(key.getKey())).containsKey(graph.getNode(value.getKey())))
-                    adjacencyList.get(key).put(value, graph.adjacencyList.get(graph.getNode(key.getKey())).get(graph.getNode(value.getKey())));
+        //todo Exceptions
+        if (copyEdges) {
+            for (Node key : this.adjacencyList.keySet()) {
+                Node graphKey = graph.getThisNode(key.getKey());
+                for (Node value : this.adjacencyList.keySet()) {
+                    Node graphValue = graph.getThisNode(value.getKey());
+                    if (graph.adjacencyList.get(graphKey).containsKey(graphValue)) {
+                        if (weighted) {
+                            addEdge(key, value, graph.adjacencyList.get(graphKey).get(graphValue));
+                        }
+                        else {
+                            addEdge(key, value);
+                        }
+                    }
+
+                }
             }
         }
     }
 
-    public boolean isWeighted() {
-        return isWeighted;
-    }
-
-    public Node getNode(String key) {
-        for (Node node : adjacencyList.keySet()) {
-            if (node.getKey() == key) {
-                return node;
-            }
-        }
-        return null;
+    public boolean getWeighted() {
+        return weighted;
     }
 
     public boolean addNode(String key) {
@@ -64,12 +73,43 @@ public class Graph {
         }
     }
 
-    public boolean hasNode(Node node) {
-        return adjacencyList.containsKey(node);
+    private Node getThisNode(String key) {
+        for (Node node : adjacencyList.keySet()) {
+            if (node.getKey().equals(key)) {
+                return node;
+            }
+        }
+        return null;
     }
 
-    public boolean deleteNode(Node node) {
-        if (!adjacencyList.containsKey(node)) {
+    public Node getNode(String key) {
+        for (Node node : adjacencyList.keySet()) {
+            if (node.getKey().equals(key)) {
+                return new Node(node);
+            }
+        }
+        return null;
+    }
+
+    private boolean hasNode(Node node) {
+        if (adjacencyList.keySet().contains(node)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean hasNode(String key) {
+        for (Node node : adjacencyList.keySet()) {
+            if (node.getKey().equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean deleteNode(Node node) {
+        if (!adjacencyList.keySet().contains(node)) {
             return false;
         } else {
             adjacencyList.remove(node);
@@ -80,14 +120,18 @@ public class Graph {
         }
     }
 
-    public boolean addEdge(Node startNode, Node endNode) {
+    public boolean deleteNode(String key) {
+        return deleteNode(getThisNode(key));
+    }
+
+    private boolean addEdge(Node startNode, Node endNode) {
         if (!(hasNode(startNode) && hasNode(endNode))) {
             throw new NullPointerException("There is no such node");
         } else {
             if (adjacencyList.get(startNode).containsKey(endNode)) {
                 return false;
             } else {
-                if (!isOriented) {
+                if (!oriented) {
                     adjacencyList.get(startNode).put(endNode, (double) 0);
                     adjacencyList.get(endNode).put(startNode, (double) 0);
                     return true;
@@ -99,8 +143,12 @@ public class Graph {
         }
     }
 
-    public boolean addEdge(Node startNode, Node endNode, double weight) {
-        if (!isWeighted) {
+    public boolean addEdge(String startKey, String endKey) {
+        return addEdge(getThisNode(startKey), getThisNode(endKey));
+    }
+
+    private boolean addEdge(Node startNode, Node endNode, double weight) {
+        if (!weighted) {
             throw new NullPointerException("Graph is not weighted");
         } else {
             if (!(hasNode(startNode) && hasNode(endNode))) {
@@ -109,7 +157,7 @@ public class Graph {
                 if (adjacencyList.get(startNode).containsKey(endNode)) {
                     return false;
                 } else {
-                    if (!isOriented) {
+                    if (!oriented) {
                         adjacencyList.get(startNode).put(endNode, weight);
                         adjacencyList.get(endNode).put(startNode, weight);
                         return true;
@@ -122,11 +170,15 @@ public class Graph {
         }
     }
 
-    public boolean deleteEdge(Node startNode, Node endNode) {
+    public boolean addEdge(String startKey, String endKey, double weight) {
+        return addEdge(getThisNode(startKey), getThisNode(endKey), weight);
+    }
+
+    private boolean deleteEdge(Node startNode, Node endNode) {
         if (!(hasNode(startNode) && hasNode(endNode))) {
             throw new NullPointerException("There is no such node");
         } else {
-            if (!isOriented) {
+            if (!oriented) {
                 if (adjacencyList.get(startNode).containsKey(endNode)) {
                     adjacencyList.get(startNode).remove(endNode);
                     adjacencyList.get(endNode).remove(startNode);
@@ -144,8 +196,18 @@ public class Graph {
         }
     }
 
+    public boolean deleteEdge(String startKey, String endKey) {
+        return deleteEdge(getThisNode(startKey), getThisNode(endKey));
+    }
+
     public Set<Node> getNodes() {
         return adjacencyList.keySet();
+    }
+
+    private void setNodesUsedFalse() {
+        for (Node n : adjacencyList.keySet()) {
+            n.setUsed(false);
+        }
     }
 
     @Override
@@ -157,10 +219,11 @@ public class Graph {
             HashMap<Node, Double> value = entry.getValue();
             for (Map.Entry<Node, Double> edge : value.entrySet()) {
                 Node adjacency = edge.getKey();
-                s.append(adjacency.toString()).append(";");
-                if (isWeighted) {
-                    s.append(edge.getValue().toString()).append(";");
+                s.append(adjacency.toString());
+                if (weighted) {
+                    s.append("|").append(edge.getValue().toString());
                 }
+                s.append(";");
             }
             s.append("\n");
         }
@@ -173,31 +236,31 @@ public class Graph {
         ArrayList<Node> nodes = new ArrayList<>();
         for (Map.Entry<Node, HashMap<Node, Double>> entry : adjacencyList.entrySet()) {
             if (entry.getValue().size() == 0) {
-                nodes.add(entry.getKey());
+                nodes.add(new Node(entry.getKey()));
             }
         }
         return nodes;
     }
 
     //task Ia(17) Wrong
-    public boolean doesCallingExist(Node startNode, Node endNode) {
-        if (!(hasNode(startNode) && hasNode(endNode))) {
+    public boolean doesCallingExist(String startKey, String endKey) {
+        if (!(hasNode(startKey) && hasNode(endKey))) {
             throw new NullPointerException("There is no such a node");
         } else {
-            Set<Node> aSet = adjacencyList.get(startNode).keySet();
-            Set<Node> bSet = adjacencyList.get(endNode).keySet();
+            Set<Node> aSet = adjacencyList.get(getThisNode(startKey)).keySet();
+            Set<Node> bSet = adjacencyList.get(getThisNode(endKey)).keySet();
             aSet.retainAll(bSet);
             return aSet.size() != 0;
         }
     }
 
     //task Ia(17)
-    public boolean doesIssueExist(Node startNode, Node endNode) {
-        if (!(hasNode(startNode) && hasNode(endNode))) {
+    public boolean doesIssueExist(String startKey, String endKey) {
+        if (!(hasNode(startKey) && hasNode(endKey))) {
             throw new NullPointerException("There is no such a node");
         } else {
             for (Map.Entry<Node, HashMap<Node, Double>> entry : adjacencyList.entrySet()) {
-                if (entry.getValue().containsKey(startNode) && entry.getValue().containsKey(endNode)) {
+                if (entry.getValue().containsKey(getThisNode(startKey)) && entry.getValue().containsKey(getThisNode(endKey))) {
                     return true;
                 }
             }
@@ -208,13 +271,12 @@ public class Graph {
     //task Ib(8)
     //Todo remove exception
     public Graph deleteOddEdges() {
-        Graph temp = new Graph(this);
+        Graph temp = new Graph(this, true);
         for (Map.Entry<Node, HashMap<Node, Double>> entry : temp.adjacencyList.entrySet()) {
-            if (Integer.parseInt(entry.getKey().toString()) % 2 == 0) {
+            if (Integer.parseInt(entry.getKey().getKey()) % 2 == 0) {
                 for (Node node : entry.getValue().keySet()) {
-                    if (Integer.parseInt(node.toString()) % 2 == 0) {
+                    if (Integer.parseInt(node.getKey()) % 2 == 0) {
                         temp.deleteEdge(entry.getKey(), node);
-
                     }
                 }
             }
@@ -222,35 +284,164 @@ public class Graph {
         return temp;
     }
 
-    //task II(23)
 
-    public ArrayList<Edge> convertIntoEdges() {
-        ArrayList<Edge> edges = new ArrayList<>();
-        Graph temp = this; //Todo constructor copy
+    public void convertIntoEdges() {
+        edges = new ArrayList<>();
 
-        if (isOriented) {
-            for (Map.Entry<Node, HashMap<Node, Double>> from : temp.adjacencyList.entrySet()) {
+        if (oriented) {
+            for (Map.Entry<Node, HashMap<Node, Double>> from : adjacencyList.entrySet()) {
                 for (Map.Entry<Node, Double> to : from.getValue().entrySet()) {
-                    edges.add(new Edge(from.getKey(), to.getKey(), to.getValue()));
+                    if (weighted) {
+                        edges.add(new Edge(from.getKey(), to.getKey(), to.getValue(), oriented));
+                    } else {
+                        edges.add(new Edge(from.getKey(), to.getKey(), oriented));
+                    }
                 }
             }
-        }
-        else {
+        } else {
             ArrayList<Node> usedNodes = new ArrayList<>();
-            for (Map.Entry<Node, HashMap<Node, Double>> from : temp.adjacencyList.entrySet()) {
+            for (Map.Entry<Node, HashMap<Node, Double>> from : adjacencyList.entrySet()) {
                 for (Map.Entry<Node, Double> to : from.getValue().entrySet()) {
-                    if (!usedNodes.contains(to.getKey()))
-                        edges.add(new Edge(from.getKey(), to.getKey(), to.getValue()));
+                    if (!usedNodes.contains(to.getKey())) {
+                        if (weighted) {
+                            edges.add(new Edge(from.getKey(), to.getKey(), to.getValue(), oriented));
+                        } else {
+                            edges.add(new Edge(from.getKey(), to.getKey(), oriented));
+                        }
+                    }
                 }
                 usedNodes.add(from.getKey());
             }
         }
-        return edges;
     }
 
-    //task II(B)
-    public void boruvka() {
+    private void dfs(Node node, Graph graph) {
+        node.setUsed(true);
+        for (Node n : adjacencyList.get(node).keySet()) {
+            if (!n.getUsed()) {
+                graph.addEdge(graph.getThisNode(node.getKey()), graph.getThisNode(n.getKey()));
+                dfs(n, graph);
+            }
+        }
+    }
+
+    private void dfsCycle(Node node, ArrayList<Node> nodes, int timer) {
+        nodes.add(node);
+        node.setUsed(true);
+        node.setTimeIn(timer++);
+        for (Node n : adjacencyList.get(node).keySet()) {
+            if (!n.getUsed()) {
+                dfsCycle(n, nodes, timer);
+            }
+            else if (node.getTimeIn() - n.getTimeIn() > 1) {
+                nodes.add(n);
+                break;
+            }
+        }
+    }
+
+    private Graph getSpanningTree() {
+        Graph spanningTree = new Graph(this, false);
+        if (!oriented) {
+            dfs((Node) adjacencyList.keySet().toArray()[0], spanningTree);
+        }
+        else {
+            for(Node node : adjacencyList.keySet()) {
+                dfs(node, spanningTree);
+            }
+        }
+        return spanningTree;
+    }
+
+    private ArrayList<Node> getCycle(Node node) {
+        ArrayList<Node> cycle = new ArrayList<>();
+        int timer = 0;
+        dfsCycle(node, cycle, timer);
+
+        if (new HashSet(cycle).size() < cycle.size()) {
+            return cycle;
+        }
+        else {
+            return null;
+        }
+    }
+
+    //task II(23)
+    public ArrayList<ArrayList<Node>> getFundamentalSetOfCycles() {
+        Graph spanningTree = this.getSpanningTree();
+
+        spanningTree.convertIntoEdges();
+        HashSet<Edge> spanningEdgesSet = new HashSet<>(spanningTree.edges);
+
+        this.convertIntoEdges();
+        HashSet<Edge> edgesSet = new HashSet<>(this.edges);
+
+        HashSet<Edge> cycleEdges = new HashSet<>();
+        for (Edge edge : edgesSet) {
+            boolean equal = false;
+            for (Edge spanningEdge : spanningEdgesSet) {
+                if (edge.equals(spanningEdge)) {
+                    equal = true;
+                    break;
+                }
+            }
+            if (!equal) {
+                cycleEdges.add(edge);
+            }
+        }
+
+
+        ArrayList<ArrayList<Node>> cycles = new ArrayList<>();
+        for(Edge edge : cycleEdges) {
+            Graph temp = new Graph(spanningTree, true);
+            temp.addEdge(edge.getStart().getKey(), edge.getEnd().getKey());
+            temp.setNodesUsedFalse();
+            if (!oriented) {
+                setNodesUsedFalse();
+                cycles.add(temp.getCycle((Node) temp.adjacencyList.keySet().toArray()[0]));
+            }
+            else {
+                setNodesUsedFalse();
+                for(Node node : temp.adjacencyList.keySet()) {
+                    ArrayList<Node> cycle = temp.getCycle(node);
+                    if (cycle != null) {
+                        cycles.add(cycle);
+                    }
+                }
+            }
+        }
+        return cycles;
+    }
+
+    //Task II(35)
+    private void bfs(Node a, Node b, ArrayList<Node> nodes) {
+        a.setUsed(true);
+        for (Node node : adjacencyList.get(a).keySet()) {
+            if (!node.getUsed()) {
+                if (node == b) {
+                    nodes.add(b);
+                }
+                else {
+                    bfs(node, b, nodes);
+                }
+            }
+        }
+    }
+
+    public double getRoutes(Node start, Node end) {
+        setNodesUsedFalse();
+        ArrayList<Node> nodes = new ArrayList<>();
+        bfs(start, end, nodes);
+        System.out.println(nodes);
+        return 0;
+    }
+
+    public void minimalRouteLengths() {
+        ArrayList<Double> lengths = new ArrayList<>();
+
+        getRoutes(getThisNode("5"), getThisNode("1"));
 
     }
+
 
 }

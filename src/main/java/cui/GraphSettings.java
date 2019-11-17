@@ -47,7 +47,7 @@ public class GraphSettings {
                    // graph.addNode(in.next());
                     break;
                 case (2):
-                    if (graph.isWeighted()) {
+                    if (graph.getWeighted()) {
                         System.out.println("Enter nodes a, b and weight: ");
                        // graph.addEdge(in.next(), in.next(), in.nextDouble());
                     }

@@ -1,36 +1,54 @@
 package graph;
 
+import java.util.Objects;
+
 public class Edge {
     private Node start;
     private Node end;
+    private boolean oriented;
+    private boolean weighted;
     private double weight;
 
-    public Edge(){
-        weight = 0;
-    }
-
-    public Edge(Node startNode, Node endNode, double weight){
+    public Edge(Node startNode, Node endNode, double weight, boolean oriented){
         start = startNode;
         end = endNode;
+        this.oriented = oriented;
+        weighted = true;
         this.weight = weight;
     }
 
-    public Edge(Node startNode, Node endNode){
+    public Edge(Node startNode, Node endNode, boolean oriented){
         start = startNode;
         end = endNode;
+        this.oriented = oriented;
+        weighted = false;
         weight = 0;
     }
 
     public Node getStart() {
-        return start;
+        return new Node(start);
     }
 
     public Node getEnd() {
-        return end;
+        return new Node(end);
     }
 
     public double getWeight() {
-        return weight;
+        if (weighted) {
+            return weight;
+        }
+        else {
+            //TODO CHECK EXCEPTIONS
+            throw new NullPointerException();
+        }
+    }
+
+    public boolean isWeighted() {
+        return weighted;
+    }
+
+    public boolean isOriented() {
+        return oriented;
     }
 
     public void setStart(Node node) {
@@ -41,12 +59,41 @@ public class Edge {
         this.end = node;
     }
 
+    //todo Exception
     public void setWeight(double weight) {
         this.weight = weight;
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Edge edge = (Edge) o;
+        if (oriented) {
+            return weighted == edge.weighted &&
+                    Double.compare(edge.weight, weight) == 0 &&
+                    start.getKey().equals(edge.start.getKey()) &&
+                    end.getKey().equals(edge.end.getKey());
+        }
+        else {
+            return weighted == edge.weighted &&
+                    Double.compare(edge.weight, weight) == 0 &&
+                    (start.getKey().equals(edge.start.getKey()) && end.getKey().equals(edge.end.getKey()) ||
+                            end.getKey().equals(edge.start.getKey()) && start.getKey().equals(edge.end.getKey()));        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end, weighted, weight);
+    }
+
+    @Override
     public java.lang.String toString() {
-        return "" + start + ";" + end + ";" + weight + ";";
+        String s = "";
+        s += start + ";" + end + ";";
+        if (weighted) {
+            s += weight + ";";
+        }
+        return s;
     }
 }

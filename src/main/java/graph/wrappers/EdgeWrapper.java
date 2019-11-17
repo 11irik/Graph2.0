@@ -10,7 +10,10 @@ public class EdgeWrapper {
     double weight;
 
     public EdgeWrapper(Edge edge, ArrayList<NodeWrapper> nodes) {
-        weight = edge.getWeight();
+
+        if (edge.isWeighted()) {
+            weight = edge.getWeight();
+        }
         for (NodeWrapper node : nodes) {
             if (node.getNode() == edge.getStart()) {
                 start = node;

@@ -28,10 +28,10 @@ public class Start extends JFrame {
         graph.addNode("1");
         graph.addNode("10");
         graph.addNode("11");
-        graph.addEdge(graph.getNode("5"), graph.getNode("6"));
-        graph.addEdge(graph.getNode("5"), graph.getNode("2"));
-        graph.addEdge(graph.getNode("6"), graph.getNode("2"));
-        graph.addEdge(graph.getNode("5"), graph.getNode("11"));
+        graph.addEdge("5", "6");
+        graph.addEdge("5", "2");
+        graph.addEdge("6", "2");
+        graph.addEdge("5", "11");
 
 
         GridLayout gridLayout = new GridLayout(0, 2);
