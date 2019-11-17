@@ -285,7 +285,7 @@ public class Graph {
     }
 
 
-    public void convertIntoEdges() {
+    private void convertIntoEdges() {
         edges = new ArrayList<>();
 
         if (oriented) {
@@ -313,6 +313,22 @@ public class Graph {
                 usedNodes.add(from.getKey());
             }
         }
+    }
+
+    public ArrayList<Edge> getEdges() {
+        convertIntoEdges();
+        ArrayList<Edge> edges = new ArrayList<>();
+        if (weighted) {
+            for (Edge edge : this.edges) {
+                edges.add(new Edge(new Node(edge.getStart()), new Node(edge.getEnd()), edge.getWeight(), oriented));
+            }
+        }
+        else {
+            for (Edge edge : this.edges) {
+                edges.add(new Edge(new Node(edge.getStart()), new Node(edge.getEnd()), oriented));
+            }
+        }
+        return edges;
     }
 
     private void dfs(Node node, Graph graph) {
@@ -414,32 +430,70 @@ public class Graph {
     }
 
     //Task II(35)
-    private void bfs(Node a, Node b, ArrayList<Node> nodes) {
-        a.setUsed(true);
+    private Node getNearestNeighbor(Node a) {
+        Node temp = null;
+        double minimalLength = Double.POSITIVE_INFINITY;
         for (Node node : adjacencyList.get(a).keySet()) {
             if (!node.getUsed()) {
-                if (node == b) {
-                    nodes.add(b);
-                }
-                else {
-                    bfs(node, b, nodes);
+                double length = adjacencyList.get(a).get(node);
+                if (length < minimalLength) {
+                    minimalLength = length;
+                    temp = node;
                 }
             }
         }
+        return temp;
     }
+    private HashMap<Node, Double> deikstra(Node node) {
+        //ArrayList<ArrayList<Node>> route = new ArrayList<>();
 
-    public double getRoutes(Node start, Node end) {
-        setNodesUsedFalse();
-        ArrayList<Node> nodes = new ArrayList<>();
-        bfs(start, end, nodes);
-        System.out.println(nodes);
-        return 0;
+        HashSet<Node> unusedNodes = new HashSet<>(adjacencyList.keySet());
+        HashMap<Node, Double> lengths = new HashMap<>();
+        double inf = Double.POSITIVE_INFINITY;
+        for (Node adj : adjacencyList.keySet()) {
+            lengths.put(adj, inf);
+        }
+        lengths.put(node, 0.0);
+
+        int k = 0;
+
+        while (unusedNodes.size() != 0) {
+            Node minUnusedNode = null;
+            Double minMark = inf;
+
+            for (Node adj : unusedNodes) {
+                double adjMinMark = lengths.get(adj);
+                if (adjMinMark <= minMark) {
+                    minMark = adjMinMark;
+                    minUnusedNode = adj;
+                }
+            }
+
+
+            if (minUnusedNode != null) {
+                setNodesUsedFalse();
+                for (int i = 0; i < adjacencyList.get(minUnusedNode).keySet().size(); ++i) {
+                    Node nearestNeighbor = getNearestNeighbor(minUnusedNode);
+                    double mark = lengths.get(minUnusedNode) + adjacencyList.get(minUnusedNode).get(nearestNeighbor);
+                    if (lengths.get(nearestNeighbor) > mark) {
+                        lengths.put(nearestNeighbor, mark);
+                    }
+                    nearestNeighbor.setUsed(true);
+                }
+                unusedNodes.remove(minUnusedNode);
+            }
+        }
+
+        return lengths;
     }
 
     public void minimalRouteLengths() {
-        ArrayList<Double> lengths = new ArrayList<>();
+        HashMap<Node, HashMap<Node, Double>> lengths = new HashMap<>();
 
-        getRoutes(getThisNode("5"), getThisNode("1"));
+        for (Node node : adjacencyList.keySet()) {
+            lengths.put(node, deikstra(node));
+            System.out.println(node + lengths.get(node).toString());
+        }
 
     }
 

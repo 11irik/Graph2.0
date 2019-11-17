@@ -15,10 +15,10 @@ public class EdgeWrapper {
             weight = edge.getWeight();
         }
         for (NodeWrapper node : nodes) {
-            if (node.getNode() == edge.getStart()) {
+            if (node.getNode().getKey() == edge.getStart().getKey()) {
                 start = node;
             }
-            if (node.getNode() == edge.getEnd()) {
+            if (node.getNode().getKey() == edge.getEnd().getKey()) {
                 end = node;
             }
             if (start != null && end  != null) {

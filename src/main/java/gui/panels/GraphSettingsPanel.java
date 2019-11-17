@@ -12,7 +12,7 @@ public class GraphSettingsPanel extends JPanel {
 
     public GraphSettingsPanel(GraphWrapper graphWrapper) {
         this.graphWrapper = graphWrapper;
-        JButton her = new JButton("Her");
+        JButton her = new JButton("Add");
         her.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

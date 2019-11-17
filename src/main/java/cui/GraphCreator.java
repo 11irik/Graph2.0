@@ -104,7 +104,7 @@ public class GraphCreator {
                     System.out.println(graph.deleteOddEdges());
                     break;
                 case (13):
-                    graph.convertIntoEdges();
+                    graph.getEdges();
                     break;
 
             }

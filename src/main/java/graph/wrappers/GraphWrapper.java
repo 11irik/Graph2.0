@@ -19,7 +19,7 @@ public class GraphWrapper {
         edges = new ArrayList<>();
 
         graph.getNodes().forEach(node -> nodes.add(new NodeWrapper(node, random.nextInt(nodeCoordMax), random.nextInt(nodeCoordMax))));
-        //graph.convertIntoEdges().forEach(edge -> edges.add(new EdgeWrapper(edge, nodes)));
+        graph.getEdges().forEach(edge -> edges.add(new EdgeWrapper(edge, nodes)));
     }
 
     public ArrayList<EdgeWrapper> getEdges() {

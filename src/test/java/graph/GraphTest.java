@@ -41,12 +41,14 @@ public class GraphTest {
         graph.addNode("1");
         graph.addNode("10");
         graph.addNode("11");
+        graph.addNode("7");
+        graph.addEdge("6", "7", 1);
         graph.addEdge("6", "2", 1);
         graph.addEdge("5", "6", 1);
         graph.addEdge("2", "5", 0);
         graph.addEdge("11", "10", 0);
         graph.addEdge("5", "11", 1);
-        graph.addEdge("10", "1", 1);
+        graph.addEdge("1", "10", 1);
         graph.addEdge("5", "1", 1);
         graph.addEdge("2", "1", 1);
 

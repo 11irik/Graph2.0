@@ -13,6 +13,12 @@ public class NodeWrapper {
         this.y = y;
     }
 
+    public NodeWrapper(NodeWrapper node) {
+        this.node = node.node;
+        this.x = node.x;
+        this.y = node.y;
+    }
+
     public Node getNode() {
         return node;
     }
