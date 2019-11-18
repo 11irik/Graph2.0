@@ -363,7 +363,7 @@ public class Graph {
         }
     }
 
-    private Graph getComponent(Node node) {
+    private Graph getSpanningComponent(Node node) {
         Graph spanningTree = new Graph(this, false);
         if (!oriented) {
             dfs(node, spanningTree);
@@ -394,8 +394,9 @@ public class Graph {
     }
 
     //task II(23)
+    //todo bug
     public ArrayList<ArrayList<Node>> getFundamentalSetOfCycles() {
-        Graph spanningTree = this.getComponent((Node) adjacencyList.keySet().toArray()[0]);
+        Graph spanningTree = this.getSpanningComponent((Node) adjacencyList.keySet().toArray()[0]);
 
         spanningTree.convertIntoEdges();
         HashSet<Edge> spanningEdgesSet = new HashSet<>(spanningTree.edges);
@@ -506,6 +507,35 @@ public class Graph {
         return lengths;
     }
 
+
+    private void bfs(Node node, HashMap<Node, HashMap<Node, Double>> lengths) {
+        if (!node.getUsed()) {
+            node.setUsed(true);
+            for (Node adj : adjacencyList.get(node).keySet()) {
+                if (!adj.getUsed()) {
+                    lengths.get(node).put(adj, adjacencyList.get(node).get(adj));
+                    bfs(adj, lengths);
+                }
+
+            }
+        }
+        else {
+
+        }
+    }
+    public HashMap<Node, HashMap<Node, Double>> minRouteLength() {
+        Graph temp = new Graph(this, true);
+        HashMap<Node, HashMap<Node, Double>> lengths = new HashMap<>();
+        for (Node node : temp.adjacencyList.keySet()) {
+            lengths.put(node, new HashMap<>());
+        }
+
+        temp.bfs((Node) temp.adjacencyList.keySet().toArray()[0], lengths);
+        System.out.println(lengths);
+
+        return null;
+    }
+
     //Task III(B)
     private Node getNearestNeighbor(Node a) {
         Node temp = null;
@@ -528,7 +558,7 @@ public class Graph {
             tree.setNodesUsedFalse();
             for (Node node : tree.adjacencyList.keySet()) {
                 if (!node.getUsed()) {
-                    components.add(tree.getComponent(node));
+                    components.add(tree.getSpanningComponent(node));
                     node.setUsed(true);
                 }
             }

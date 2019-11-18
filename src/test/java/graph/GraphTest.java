@@ -161,6 +161,11 @@ public class GraphTest {
     }
 
     @Test
+    public void minRoutes() {
+        graph.minRouteLength();
+    }
+
+    @Test
     public void boruvka() {
         System.out.println(graph.boruvka());
     }
