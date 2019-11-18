@@ -22,6 +22,10 @@ public class GraphWrapper {
         graph.getEdges().forEach(edge -> edges.add(new EdgeWrapper(edge, nodes)));
     }
 
+    public GraphWrapper(GraphWrapper graph) {
+        this(graph.graph);
+    }
+
     public ArrayList<EdgeWrapper> getEdges() {
         return edges;
     }
@@ -38,5 +42,21 @@ public class GraphWrapper {
         else {
             return false;
         }
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public void setGraph(Graph graph) {
+        this.graph = graph;
+    }
+
+    public void refresh() {
+        nodes = new ArrayList<>();
+        edges = new ArrayList<>();
+
+        graph.getNodes().forEach(node -> nodes.add(new NodeWrapper(node, random.nextInt(nodeCoordMax), random.nextInt(nodeCoordMax))));
+        graph.getEdges().forEach(edge -> edges.add(new EdgeWrapper(edge, nodes)));
     }
 }

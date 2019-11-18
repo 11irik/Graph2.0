@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
@@ -14,25 +15,34 @@ import static org.junit.Assert.*;
 public class GraphTest {
     Graph graph;
 
-    //@Before
+    @Before
     public void createGraph() {
-        graph = new Graph();
+        graph = new Graph(false, true);
         graph.addNode("5");
         graph.addNode("6");
         graph.addNode("2");
         graph.addNode("1");
         graph.addNode("10");
         graph.addNode("11");
-        graph.addEdge("5", "6");
-        graph.addEdge("5", "2");
-        graph.addEdge("6", "2");
-        graph.addEdge("5", "11");
-        graph.addEdge("11", "1");
-        graph.addEdge("1", "10");
+        graph.addNode("9");
+        graph.addNode("12");
+
+
+        graph.addEdge("5", "6", 6);
+        graph.addEdge("5", "2", 9);
+        graph.addEdge("6", "2", 12);
+        graph.addEdge("5", "11", 3);
+        graph.addEdge("11", "1", 10);
+        graph.addEdge("1", "10", 20);
+        graph.addEdge("2", "9", 7);
+        graph.addEdge("10", "9", 13);
+        graph.addEdge("10", "12", 8);
+        graph.addEdge("11", "12", 14);
+
         System.out.println(graph + "---Before---\n");
     }
 
-    @Before
+    //@Before
     public void createOrGraph() {
         graph = new Graph(true, true);
         graph.addNode("5");
@@ -107,6 +117,13 @@ public class GraphTest {
     }
 
     @Test
+    public void removeIsolated() {
+        graph.addNode("100");
+        graph = graph.removeIsolated();
+        System.out.println(graph);
+    }
+
+    @Test
     public void doesCallingExist() {
         System.out.println(graph.doesCallingExist("1", "5"));
         System.out.println(graph.doesCallingExist("5", "11"));
@@ -137,6 +154,14 @@ public class GraphTest {
 
     @Test
     public void minimalRoutesLengths() {
-        graph.minimalRouteLengths();
+        HashMap<Node, HashMap<Node, Double>> lengths = graph.minimalRouteLengths();
+        for(Node node : lengths.keySet()) {
+            System.out.println(node + lengths.get(node).toString());
+        }
+    }
+
+    @Test
+    public void boruvka() {
+        System.out.println(graph.boruvka());
     }
 }

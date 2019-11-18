@@ -49,8 +49,7 @@ public class Graph {
                     if (graph.adjacencyList.get(graphKey).containsKey(graphValue)) {
                         if (weighted) {
                             addEdge(key, value, graph.adjacencyList.get(graphKey).get(graphValue));
-                        }
-                        else {
+                        } else {
                             addEdge(key, value);
                         }
                     }
@@ -221,7 +220,7 @@ public class Graph {
                 Node adjacency = edge.getKey();
                 s.append(adjacency.toString());
                 if (weighted) {
-                    s.append("|").append(edge.getValue().toString());
+                    s.append("(").append(edge.getValue().toString()).append(")");
                 }
                 s.append(";");
             }
@@ -240,6 +239,16 @@ public class Graph {
             }
         }
         return nodes;
+    }
+
+    public Graph removeIsolated() {
+        Graph temp = new Graph(this, true);
+        for (Node node : adjacencyList.keySet()) {
+            if (adjacencyList.get(node).keySet().size() == 0) {
+                temp.deleteNode(temp.getThisNode(node.getKey()));
+            }
+        }
+        return temp;
     }
 
     //task Ia(17) Wrong
@@ -322,8 +331,7 @@ public class Graph {
             for (Edge edge : this.edges) {
                 edges.add(new Edge(new Node(edge.getStart()), new Node(edge.getEnd()), edge.getWeight(), oriented));
             }
-        }
-        else {
+        } else {
             for (Edge edge : this.edges) {
                 edges.add(new Edge(new Node(edge.getStart()), new Node(edge.getEnd()), oriented));
             }
@@ -348,23 +356,27 @@ public class Graph {
         for (Node n : adjacencyList.get(node).keySet()) {
             if (!n.getUsed()) {
                 dfsCycle(n, nodes, timer);
-            }
-            else if (node.getTimeIn() - n.getTimeIn() > 1) {
+            } else if (node.getTimeIn() - n.getTimeIn() > 1) {
                 nodes.add(n);
                 break;
             }
         }
     }
 
-    private Graph getSpanningTree() {
+    private Graph getComponent(Node node) {
         Graph spanningTree = new Graph(this, false);
         if (!oriented) {
-            dfs((Node) adjacencyList.keySet().toArray()[0], spanningTree);
-        }
-        else {
-            for(Node node : adjacencyList.keySet()) {
-                dfs(node, spanningTree);
+            dfs(node, spanningTree);
+        } else {
+            for (Node n : adjacencyList.keySet()) {
+                dfs(n, spanningTree);
             }
+        }
+        if (spanningTree.adjacencyList.get(spanningTree.getThisNode(node.getKey())).keySet().size() == 0) {
+            spanningTree = spanningTree.removeIsolated();
+            spanningTree.addNode(node.getKey());
+        } else {
+            spanningTree = spanningTree.removeIsolated();
         }
         return spanningTree;
     }
@@ -376,15 +388,14 @@ public class Graph {
 
         if (new HashSet(cycle).size() < cycle.size()) {
             return cycle;
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     //task II(23)
     public ArrayList<ArrayList<Node>> getFundamentalSetOfCycles() {
-        Graph spanningTree = this.getSpanningTree();
+        Graph spanningTree = this.getComponent((Node) adjacencyList.keySet().toArray()[0]);
 
         spanningTree.convertIntoEdges();
         HashSet<Edge> spanningEdgesSet = new HashSet<>(spanningTree.edges);
@@ -408,17 +419,16 @@ public class Graph {
 
 
         ArrayList<ArrayList<Node>> cycles = new ArrayList<>();
-        for(Edge edge : cycleEdges) {
+        for (Edge edge : cycleEdges) {
             Graph temp = new Graph(spanningTree, true);
             temp.addEdge(edge.getStart().getKey(), edge.getEnd().getKey());
             temp.setNodesUsedFalse();
             if (!oriented) {
                 setNodesUsedFalse();
                 cycles.add(temp.getCycle((Node) temp.adjacencyList.keySet().toArray()[0]));
-            }
-            else {
+            } else {
                 setNodesUsedFalse();
-                for(Node node : temp.adjacencyList.keySet()) {
+                for (Node node : temp.adjacencyList.keySet()) {
                     ArrayList<Node> cycle = temp.getCycle(node);
                     if (cycle != null) {
                         cycles.add(cycle);
@@ -430,7 +440,7 @@ public class Graph {
     }
 
     //Task II(35)
-    private Node getNearestNeighbor(Node a) {
+    private Node getNearestNeighborFromUnused(Node a) {
         Node temp = null;
         double minimalLength = Double.POSITIVE_INFINITY;
         for (Node node : adjacencyList.get(a).keySet()) {
@@ -444,7 +454,8 @@ public class Graph {
         }
         return temp;
     }
-    private HashMap<Node, Double> deikstra(Node node) {
+
+    private HashMap<Node, Double> dijkstra(Node node) {
         //ArrayList<ArrayList<Node>> route = new ArrayList<>();
 
         HashSet<Node> unusedNodes = new HashSet<>(adjacencyList.keySet());
@@ -455,25 +466,22 @@ public class Graph {
         }
         lengths.put(node, 0.0);
 
-        int k = 0;
-
         while (unusedNodes.size() != 0) {
             Node minUnusedNode = null;
             Double minMark = inf;
 
-            for (Node adj : unusedNodes) {
-                double adjMinMark = lengths.get(adj);
-                if (adjMinMark <= minMark) {
-                    minMark = adjMinMark;
-                    minUnusedNode = adj;
+            for (Node unusedNode : unusedNodes) {
+                double unusedMinMark = lengths.get(unusedNode);
+                if (unusedMinMark <= minMark) {
+                    minMark = unusedMinMark;
+                    minUnusedNode = unusedNode;
                 }
             }
-
 
             if (minUnusedNode != null) {
                 setNodesUsedFalse();
                 for (int i = 0; i < adjacencyList.get(minUnusedNode).keySet().size(); ++i) {
-                    Node nearestNeighbor = getNearestNeighbor(minUnusedNode);
+                    Node nearestNeighbor = getNearestNeighborFromUnused(minUnusedNode);
                     double mark = lengths.get(minUnusedNode) + adjacencyList.get(minUnusedNode).get(nearestNeighbor);
                     if (lengths.get(nearestNeighbor) > mark) {
                         lengths.put(nearestNeighbor, mark);
@@ -487,15 +495,71 @@ public class Graph {
         return lengths;
     }
 
-    public void minimalRouteLengths() {
+    public HashMap<Node, HashMap<Node, Double>> minimalRouteLengths() {
+        Graph temp = new Graph(this, true);
         HashMap<Node, HashMap<Node, Double>> lengths = new HashMap<>();
 
-        for (Node node : adjacencyList.keySet()) {
-            lengths.put(node, deikstra(node));
-            System.out.println(node + lengths.get(node).toString());
+        for (Node node : temp.adjacencyList.keySet()) {
+            lengths.put(node, temp.dijkstra(node));
         }
 
+        return lengths;
     }
 
+    //Task III(B)
+    private Node getNearestNeighbor(Node a) {
+        Node temp = null;
+        double minimalLength = Double.POSITIVE_INFINITY;
+        for (Node node : adjacencyList.get(a).keySet()) {
+            double length = adjacencyList.get(a).get(node);
+            if (length < minimalLength) {
+                minimalLength = length;
+                temp = node;
+            }
+        }
+        return temp;
+    }
 
+    public Graph boruvka() {
+        Graph tree = new Graph(this);
+        ArrayList<Graph> components;
+        do {
+            components = new ArrayList<>();
+            tree.setNodesUsedFalse();
+            for (Node node : tree.adjacencyList.keySet()) {
+                if (!node.getUsed()) {
+                    components.add(tree.getComponent(node));
+                    node.setUsed(true);
+                }
+            }
+
+            for (Graph component : components) {
+                setNodesUsedFalse();
+                for (Node node : component.adjacencyList.keySet()) {
+                    this.getThisNode(node.getKey()).setUsed(true);
+                }
+
+                Node start = null;
+                Node end = null;
+                double minimalLength = Double.POSITIVE_INFINITY;
+
+                for (Node node : component.adjacencyList.keySet()) {
+                    Node tempStart = getThisNode(node.getKey());
+                    Node tempEnd = getNearestNeighborFromUnused(getThisNode(node.getKey()));
+                    double tempLength = adjacencyList.get(tempStart).get(tempEnd);
+                    if (minimalLength > tempLength) {
+                        minimalLength = tempLength;
+                        start = tempStart;
+                        end = tempEnd;
+                    }
+                }
+
+                tree.addEdge(tree.getThisNode(start.getKey()), tree.getThisNode(end.getKey()),
+                        minimalLength);
+            }
+
+        } while (tree.getEdges().size() != tree.adjacencyList.keySet().size()-1);
+        return tree;
+    }
 }
+

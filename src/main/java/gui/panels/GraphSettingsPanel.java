@@ -1,5 +1,6 @@
 package gui.panels;
 
+import graph.Graph;
 import graph.wrappers.GraphWrapper;
 
 import javax.swing.*;
@@ -12,13 +13,15 @@ public class GraphSettingsPanel extends JPanel {
 
     public GraphSettingsPanel(GraphWrapper graphWrapper) {
         this.graphWrapper = graphWrapper;
-        JButton her = new JButton("Add");
-        her.addActionListener(new ActionListener() {
+        JButton refresh = new JButton("Refresh");
+        refresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                graphWrapper.addNode("hello");
+                graphWrapper.setGraph(graphWrapper.getGraph().boruvka());
+                graphWrapper.refresh();
+
             }
         });
-        add(her);
+        add(refresh);
     }
 }
