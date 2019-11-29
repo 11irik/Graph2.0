@@ -77,7 +77,10 @@ public class Start extends JFrame {
         workspace.setLayout(gridLayout);
         add(workspace);
 
-        GraphWrapper graphWrapper = new GraphWrapper(graph);
+        //todo
+//        GraphWrapper graphWrapper = new GraphWrapper(graph);
+        Graph.Generator gen = new Graph.Generator(10);
+        GraphWrapper graphWrapper = new GraphWrapper(gen.graph);
         GraphImagePanel graphImagePanel = new GraphImagePanel(graphWrapper);
         workspace.add(graphImagePanel);
 

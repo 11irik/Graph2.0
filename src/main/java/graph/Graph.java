@@ -394,7 +394,7 @@ public class Graph {
     }
 
     //task II(23)
-    //todo bug
+    //todo BUG
     public ArrayList<ArrayList<Node>> getFundamentalSetOfCycles() {
         Graph spanningTree = this.getSpanningComponent((Node) adjacencyList.keySet().toArray()[0]);
 
@@ -590,6 +590,57 @@ public class Graph {
 
         } while (tree.getEdges().size() != tree.adjacencyList.keySet().size()-1);
         return tree;
+    }
+
+    public static class Generator {
+        public Graph graph = new Graph(false, true);
+
+        //full
+//        public Generator(int count) {
+//            for (int i = 0; i < count; ++i) {
+//                graph.addNode(String.valueOf(i+1));
+//            }
+//            for (Node nodeStart: graph.adjacencyList.keySet()) {
+//                for (Node nodeEnd: graph.adjacencyList.keySet()) {
+//                    Random random = new Random();
+//                    graph.addEdge(nodeStart, nodeEnd, random.nextInt());
+//                }
+//            }
+//        }
+
+        //
+        public Generator(int count) {
+            for (int i = 0; i < count; ++i) {
+                graph.addNode(String.valueOf(i+1));
+            }
+
+            Random random = new Random();
+            int randomHalfSize = 5;//random.nextInt(count);
+            System.out.println("Half: " + randomHalfSize);
+
+            for (int i = 0; i < randomHalfSize; ++i) {
+                Node nodeStart = graph.getThisNode(String.valueOf(i+1));
+                int randomEdgesCount = random.nextInt(count - randomHalfSize);
+                int edgesCount = 0;
+                while (edgesCount != randomEdgesCount) {
+                    int nodeNum = randomHalfSize + random.nextInt(count - randomHalfSize + 1);
+                    System.out.println("NodeNum: " + nodeNum);
+                    Node nodeEnd = graph.getThisNode(String.valueOf(nodeNum));
+                    if (graph.addEdge(nodeStart, nodeEnd, random.nextInt())) {
+                        edgesCount++;
+                    }
+
+                }
+            }
+
+
+//            for (Node nodeStart: graph.adjacencyList.keySet()) {
+//                for (Node nodeEnd: graph.adjacencyList.keySet()) {
+//                    graph.addEdge(nodeStart, nodeEnd, random.nextInt());
+//                }
+//            }
+        }
+
     }
 }
 
