@@ -28,16 +28,16 @@ public class GraphTest {
         graph.addNode("12");
 
 
-        graph.addEdge("5", "6", 6);
-        graph.addEdge("5", "2", 9);
-        graph.addEdge("6", "2", 12);
-        graph.addEdge("5", "11", 3);
-        graph.addEdge("11", "1", 10);
-        graph.addEdge("1", "10", 20);
-        graph.addEdge("2", "9", 7);
-        graph.addEdge("10", "9", 13);
-        graph.addEdge("10", "12", 8);
-        graph.addEdge("11", "12", 14);
+        graph.addEdge("5", "6", 1);
+        graph.addEdge("5", "2", 1);
+        graph.addEdge("6", "2", 0);
+        graph.addEdge("5", "11", 1);
+        graph.addEdge("11", "1", 0);
+        graph.addEdge("1", "10", 1);
+        graph.addEdge("2", "9", 1);
+        graph.addEdge("10", "9", 1);
+        graph.addEdge("10", "12", 0);
+        graph.addEdge("11", "12", 1);
 
         System.out.println(graph + "---Before---\n");
     }
@@ -153,16 +153,11 @@ public class GraphTest {
     }
 
     @Test
-    public void minimalRoutesLengths() {
-        HashMap<Node, HashMap<Node, Double>> lengths = graph.minimalRouteLengths();
-        for(Node node : lengths.keySet()) {
-            System.out.println(node + lengths.get(node).toString());
+    public void minimalDistances() {
+        HashMap<Node, HashMap<Node, Double>> distances = graph.minimalDistances();
+        for (Node node : distances.keySet()) {
+            System.out.println(node + " : " + distances.get(node));
         }
-    }
-
-    @Test
-    public void minRoutes() {
-        graph.minRouteLength();
     }
 
     @Test

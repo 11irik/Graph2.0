@@ -395,8 +395,7 @@ public class Graph {
             if (!n.getUsed()) {
                 nodes.add(n);
                 dfsCycle(n, nodes, timer);
-            }
-            else {
+            } else {
                 if (n.getTimeIn() - node.getTimeIn() < -1) {
                     nodes.add(n);
                     System.out.println(nodes);
@@ -473,7 +472,7 @@ public class Graph {
         return lengths;
     }
 
-    public HashMap<Node, HashMap<Node, Double>> minimalRouteLengths() {
+    public HashMap<Node, HashMap<Node, Double>> distancesDijkstra() {
         Graph temp = new Graph(this, true);
         HashMap<Node, HashMap<Node, Double>> lengths = new HashMap<>();
 
@@ -484,33 +483,49 @@ public class Graph {
         return lengths;
     }
 
-
-    private void bfs(Node node, HashMap<Node, HashMap<Node, Double>> lengths) {
-        if (!node.getUsed()) {
-            node.setUsed(true);
-            for (Node adj : adjacencyList.get(node).keySet()) {
-                if (!adj.getUsed()) {
-                    lengths.get(node).put(adj, adjacencyList.get(node).get(adj));
-                    bfs(adj, lengths);
-                }
-
-            }
-        } else {
-
+    private HashMap<Node, Double> bfs(Node start) {
+        HashMap<Node, Double> distances = new HashMap<>();
+        for (Node node : adjacencyList.keySet()) {
+            distances.put(node, Double.POSITIVE_INFINITY);
         }
+        distances.put(start, 0.0);
+
+        HashMap<Node, Node> parents = new HashMap<>();
+        for (Node node : adjacencyList.keySet()) {
+            parents.put(node, null);
+        }
+
+        Deque<Node> deque = new LinkedList<>();
+        deque.addFirst(start);
+
+        while (!deque.isEmpty()) {
+            Node begin;
+            double length;
+            begin = deque.getFirst();
+            deque.removeFirst();
+            for (Node end : adjacencyList.get(begin).keySet()) {
+                length = adjacencyList.get(begin).get(end);
+                if (distances.get(end) == Double.POSITIVE_INFINITY) {
+                    distances.put(end, distances.get(begin) + length);
+                    parents.put(end, begin);
+                    if (length == 0.0) {
+                        deque.addFirst(end);
+                    } else {
+                        deque.addLast(end);
+                    }
+                }
+            }
+        }
+
+        return distances;
     }
 
-    public HashMap<Node, HashMap<Node, Double>> minRouteLength() {
-        Graph temp = new Graph(this, true);
-        HashMap<Node, HashMap<Node, Double>> lengths = new HashMap<>();
-        for (Node node : temp.adjacencyList.keySet()) {
-            lengths.put(node, new HashMap<>());
+    public HashMap<Node, HashMap<Node, Double>> minimalDistances() {
+        HashMap<Node, HashMap<Node, Double>> distances = new HashMap<>();
+        for (Node node : adjacencyList.keySet()) {
+            distances.put(node, bfs(node));
         }
-
-        temp.bfs((Node) temp.adjacencyList.keySet().toArray()[0], lengths);
-        System.out.println(lengths);
-
-        return null;
+        return distances;
     }
 
     //Task III(B)
