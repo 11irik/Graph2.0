@@ -149,7 +149,7 @@ public class GraphTest {
 
     @Test
     public void getFundamentalSetOfCycles() {
-        System.out.println(graph.getFundamentalSetOfCycles());
+        graph.getFundamentalSetOfCycles("9");
     }
 
     @Test
@@ -167,6 +167,8 @@ public class GraphTest {
 
     @Test
     public void boruvka() {
-        System.out.println(graph.boruvka());
+        if (graph.getWeighted()) {
+            System.out.println(graph.boruvka());
+        }
     }
 }

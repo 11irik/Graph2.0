@@ -224,7 +224,7 @@ public class Graph {
         if (startNode == null || endNode == null) {
             throw new NullPointerException("There is no such node");
         } else {
-            return addEdge(startNode, endNode);
+            return addEdge(startNode, endNode, weight);
         }
     }
 
@@ -387,77 +387,34 @@ public class Graph {
         return spanningTree;
     }
 
-    private void dfsCycle(Node node, ArrayList<Node> nodes, int timer) {
-        nodes.add(node);
+    //task II(23)
+    private void dfsCycle(Node node, Stack<Node> nodes, int timer) {
+        node.setTimeIn(++timer);
         node.setUsed(true);
-        node.setTimeIn(timer++);
         for (Node n : adjacencyList.get(node).keySet()) {
             if (!n.getUsed()) {
-                dfsCycle(n, nodes, timer);
-            } else if (node.getTimeIn() - n.getTimeIn() > 1) {
                 nodes.add(n);
-                break;
+                dfsCycle(n, nodes, timer);
+            }
+            else {
+                if (n.getTimeIn() - node.getTimeIn() < -1) {
+                    nodes.add(n);
+                    System.out.println(nodes);
+                    nodes.pop();
+                }
             }
         }
+        nodes.pop();
     }
 
-    private ArrayList<Node> getCycle(Node node) {
-        ArrayList<Node> cycle = new ArrayList<>();
+    public void getFundamentalSetOfCycles(String key) {
+        Graph temp = new Graph(this, false);
+        Node node = getThisNode(key);
+        Stack<Node> nodes = new Stack<>();
+        setNodesUsedFalse();
+        nodes.add(node);
         int timer = 0;
-        dfsCycle(node, cycle, timer);
-
-        if (new HashSet(cycle).size() < cycle.size()) {
-            return cycle;
-        } else {
-            return null;
-        }
-    }
-
-    //task II(23)
-    //todo bug
-    public ArrayList<ArrayList<Node>> getFundamentalSetOfCycles() {
-        Graph spanningTree = this.getSpanningComponent((Node) adjacencyList.keySet().toArray()[0]);
-
-        spanningTree.convertIntoEdges();
-        HashSet<Edge> spanningEdgesSet = new HashSet<>(spanningTree.edges);
-
-        this.convertIntoEdges();
-        HashSet<Edge> edgesSet = new HashSet<>(this.edges);
-
-        HashSet<Edge> cycleEdges = new HashSet<>();
-        for (Edge edge : edgesSet) {
-            boolean equal = false;
-            for (Edge spanningEdge : spanningEdgesSet) {
-                if (edge.equals(spanningEdge)) {
-                    equal = true;
-                    break;
-                }
-            }
-            if (!equal) {
-                cycleEdges.add(edge);
-            }
-        }
-
-
-        ArrayList<ArrayList<Node>> cycles = new ArrayList<>();
-        for (Edge edge : cycleEdges) {
-            Graph temp = new Graph(spanningTree, true);
-            temp.addEdge(edge.getStart().getKey(), edge.getEnd().getKey());
-            temp.setNodesUsedFalse();
-            if (!oriented) {
-                setNodesUsedFalse();
-                cycles.add(temp.getCycle((Node) temp.adjacencyList.keySet().toArray()[0]));
-            } else {
-                setNodesUsedFalse();
-                for (Node node : temp.adjacencyList.keySet()) {
-                    ArrayList<Node> cycle = temp.getCycle(node);
-                    if (cycle != null) {
-                        cycles.add(cycle);
-                    }
-                }
-            }
-        }
-        return cycles;
+        dfsCycle(node, nodes, timer);
     }
 
     //Task II(35)
