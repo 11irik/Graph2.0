@@ -436,19 +436,19 @@ public class Graph {
         //ArrayList<ArrayList<Node>> route = new ArrayList<>();
 
         HashSet<Node> unusedNodes = new HashSet<>(adjacencyList.keySet());
-        HashMap<Node, Double> lengths = new HashMap<>();
+        HashMap<Node, Double> distances = new HashMap<>();
         double inf = Double.POSITIVE_INFINITY;
         for (Node adj : adjacencyList.keySet()) {
-            lengths.put(adj, inf);
+            distances.put(adj, inf);
         }
-        lengths.put(node, 0.0);
+        distances.put(node, 0.0);
 
         while (unusedNodes.size() != 0) {
             Node minUnusedNode = null;
             Double minMark = inf;
 
             for (Node unusedNode : unusedNodes) {
-                double unusedMinMark = lengths.get(unusedNode);
+                double unusedMinMark = distances.get(unusedNode);
                 if (unusedMinMark <= minMark) {
                     minMark = unusedMinMark;
                     minUnusedNode = unusedNode;
@@ -459,9 +459,9 @@ public class Graph {
                 setNodesUsedFalse();
                 for (int i = 0; i < adjacencyList.get(minUnusedNode).keySet().size(); ++i) {
                     Node nearestNeighbor = getNearestNeighborFromUnused(minUnusedNode);
-                    double mark = lengths.get(minUnusedNode) + adjacencyList.get(minUnusedNode).get(nearestNeighbor);
-                    if (lengths.get(nearestNeighbor) > mark) {
-                        lengths.put(nearestNeighbor, mark);
+                    double mark = distances.get(minUnusedNode) + adjacencyList.get(minUnusedNode).get(nearestNeighbor);
+                    if (distances.get(nearestNeighbor) > mark) {
+                        distances.put(nearestNeighbor, mark);
                     }
                     nearestNeighbor.setUsed(true);
                 }
@@ -469,7 +469,7 @@ public class Graph {
             }
         }
 
-        return lengths;
+        return distances;
     }
 
     public HashMap<Node, HashMap<Node, Double>> distancesDijkstra() {
@@ -508,6 +508,7 @@ public class Graph {
                 if (distances.get(end) == Double.POSITIVE_INFINITY) {
                     distances.put(end, distances.get(begin) + length);
                     parents.put(end, begin);
+
                     if (length == 0.0) {
                         deque.addFirst(end);
                     } else {
@@ -583,5 +584,22 @@ public class Graph {
         } while (tree.getEdges().size() != tree.adjacencyList.keySet().size() - 1);
         return tree;
     }
+
+    public double getEccentricity() {
+        double eccentricity = Double.NEGATIVE_INFINITY;
+        double radius = Double.POSITIVE_INFINITY;
+        for (Node node : adjacencyList.keySet()) {
+            for (Double distance : dijkstra(node).values()) {
+                if (eccentricity < distance) {
+                    eccentricity = distance;
+                }
+            }
+            if (eccentricity < radius) {
+                radius = eccentricity;
+            }
+        }
+        return radius;
+    }
+
 }
 

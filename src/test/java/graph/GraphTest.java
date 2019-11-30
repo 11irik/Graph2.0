@@ -166,4 +166,9 @@ public class GraphTest {
             System.out.println(graph.boruvka());
         }
     }
+
+    @Test
+    public void getEccentricity() {
+        System.out.println(graph.getEccentricity());
+    }
 }
