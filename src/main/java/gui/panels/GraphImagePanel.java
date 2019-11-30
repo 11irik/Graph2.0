@@ -1,8 +1,8 @@
 package gui.panels;
 
-import graph.wrappers.EdgeWrapper;
-import graph.wrappers.GraphWrapper;
-import graph.wrappers.NodeWrapper;
+import graph.adapters.EdgeAdapter;
+import graph.adapters.GraphAdapter;
+import graph.adapters.NodeAdapter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,20 +10,20 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class GraphImagePanel extends JPanel implements MouseListener, MouseMotionListener {
-    protected GraphWrapper graph;
+    protected GraphAdapter graph;
     int nodeSize;
     double aspect;
     int nodeCoordMax = 100000; //value of random in node
 
-    NodeWrapper chosenNode;
+    NodeAdapter chosenNode;
     boolean isChosed = false;
 
 
-    public GraphImagePanel(GraphWrapper graphWrapper) {
-        this.graph = graphWrapper;
+    public GraphImagePanel(GraphAdapter graphAdapter) {
+        this.graph = graphAdapter;
 
-        ArrayList<EdgeWrapper> edges = graphWrapper.getEdges();
-        ArrayList<NodeWrapper> nodes = graphWrapper.getNodes();
+        ArrayList<EdgeAdapter> edges = graphAdapter.getEdges();
+        ArrayList<NodeAdapter> nodes = graphAdapter.getNodes();
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -36,7 +36,7 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         graph.getNodes().forEach(node -> drawNode(g, node));
     }
 
-    private void drawNode(Graphics g, NodeWrapper node) {
+    private void drawNode(Graphics g, NodeAdapter node) {
         g.setColor(Color.BLUE);
         aspect = Math.min(g.getClipBounds().height, g.getClipBounds().width);
         nodeSize = (int) aspect / 8; // 1/8 of minimal side, can be any value
@@ -46,7 +46,7 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         g.drawString("" + node.getKey(), (int) (node.getX() * aspect / nodeCoordMax), (int) (node.getY() * aspect / nodeCoordMax));
     }
 
-    public void drawEdge(Graphics g, EdgeWrapper edge) {
+    public void drawEdge(Graphics g, EdgeAdapter edge) {
         double w = Math.min(g.getClipBounds().height, g.getClipBounds().width);
 
         g.setColor(Color.BLACK);
@@ -54,9 +54,9 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         g.drawLine((int) (edge.getStart().getX() * w / nodeCoordMax), (int) (edge.getStart().getY() * w / nodeCoordMax), (int) (edge.getEnd().getX() * w / nodeCoordMax), (int) (edge.getEnd().getY() * w / nodeCoordMax));
     }
 
-    private NodeWrapper getClickedNodeFromCoords(int x, int y) {
-        NodeWrapper node = null;
-        for (NodeWrapper n : graph.getNodes()) {
+    private NodeAdapter getClickedNodeFromCoords(int x, int y) {
+        NodeAdapter node = null;
+        for (NodeAdapter n : graph.getNodes()) {
             if (Math.abs(n.getX() * aspect / nodeCoordMax - x) < nodeSize/2 &&
                     Math.abs(n.getY() * aspect / nodeCoordMax - y) < nodeSize/2) {
                 node = n;

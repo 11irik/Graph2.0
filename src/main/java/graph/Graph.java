@@ -3,7 +3,7 @@ package graph;
 import java.util.*;
 
 public class Graph {
-    private static int count = 0;
+
     private Boolean oriented;
     private Boolean weighted;
     private HashMap<Node, HashMap<Node, Double>> adjacencyList;
@@ -40,17 +40,14 @@ public class Graph {
             this.adjacencyList.put(new Node(key), new HashMap<>());
         }
 
-        //todo Exceptions
         if (copyEdges) {
-            for (Node key : this.adjacencyList.keySet()) {
-                Node graphKey = graph.getThisNode(key.getKey());
-                for (Node value : this.adjacencyList.keySet()) {
-                    Node graphValue = graph.getThisNode(value.getKey());
-                    if (graph.adjacencyList.get(graphKey).containsKey(graphValue)) {
+            for (Node node : this.adjacencyList.keySet()) {
+                for (Node adjacencyNode : this.adjacencyList.keySet()) {
+                    if (graph.hasEdge(node.getKey(), adjacencyNode.getKey())) {
                         if (weighted) {
-                            addEdge(key, value, graph.adjacencyList.get(graphKey).get(graphValue));
+                            addEdge(node, adjacencyNode, graph.adjacencyList.get(graph.getThisNode(node.getKey())).get(graph.getThisNode(adjacencyNode.getKey())));
                         } else {
-                            addEdge(key, value);
+                            addEdge(node, adjacencyNode);
                         }
                     }
 
@@ -59,13 +56,8 @@ public class Graph {
         }
     }
 
-    public boolean getWeighted() {
-        return weighted;
-    }
-
-    public boolean addNode(String key) {
-        if (getNode(key) == null) {
-            adjacencyList.put(new Node(key), new HashMap<Node, Double>());
+    private boolean hasNode(Node node) {
+        if (adjacencyList.keySet().contains(node)) {
             return true;
         } else {
             return false;
@@ -81,32 +73,6 @@ public class Graph {
         return null;
     }
 
-    public Node getNode(String key) {
-        for (Node node : adjacencyList.keySet()) {
-            if (node.getKey().equals(key)) {
-                return new Node(node);
-            }
-        }
-        return null;
-    }
-
-    private boolean hasNode(Node node) {
-        if (adjacencyList.keySet().contains(node)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean hasNode(String key) {
-        for (Node node : adjacencyList.keySet()) {
-            if (node.getKey().equals(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private boolean deleteNode(Node node) {
         if (!adjacencyList.keySet().contains(node)) {
             return false;
@@ -119,94 +85,160 @@ public class Graph {
         }
     }
 
-    public boolean deleteNode(String key) {
-        return deleteNode(getThisNode(key));
-    }
-
     private boolean addEdge(Node startNode, Node endNode) {
-        if (!(hasNode(startNode) && hasNode(endNode))) {
-            throw new NullPointerException("There is no such node");
+        if (adjacencyList.get(startNode).containsKey(endNode)) {
+            return false;
         } else {
-            if (adjacencyList.get(startNode).containsKey(endNode)) {
-                return false;
+            if (!oriented) {
+                adjacencyList.get(startNode).put(endNode, (double) 0);
+                adjacencyList.get(endNode).put(startNode, (double) 0);
+                return true;
             } else {
-                if (!oriented) {
-                    adjacencyList.get(startNode).put(endNode, (double) 0);
-                    adjacencyList.get(endNode).put(startNode, (double) 0);
-                    return true;
-                } else {
-                    adjacencyList.get(startNode).put(endNode, (double) 0);
-                    return true;
-                }
+                adjacencyList.get(startNode).put(endNode, (double) 0);
+                return true;
             }
         }
-    }
-
-    public boolean addEdge(String startKey, String endKey) {
-        return addEdge(getThisNode(startKey), getThisNode(endKey));
     }
 
     private boolean addEdge(Node startNode, Node endNode, double weight) {
-        if (!weighted) {
-            throw new NullPointerException("Graph is not weighted");
+        if (adjacencyList.get(startNode).containsKey(endNode)) {
+            return false;
         } else {
-            if (!(hasNode(startNode) && hasNode(endNode))) {
-                throw new NullPointerException("There is no such node");
+            if (!oriented) {
+                adjacencyList.get(startNode).put(endNode, weight);
+                adjacencyList.get(endNode).put(startNode, weight);
+                return true;
             } else {
-                if (adjacencyList.get(startNode).containsKey(endNode)) {
-                    return false;
-                } else {
-                    if (!oriented) {
-                        adjacencyList.get(startNode).put(endNode, weight);
-                        adjacencyList.get(endNode).put(startNode, weight);
-                        return true;
-                    } else {
-                        adjacencyList.get(startNode).put(endNode, weight);
-                        return true;
-                    }
-                }
+                adjacencyList.get(startNode).put(endNode, weight);
+                return true;
             }
         }
-    }
-
-    public boolean addEdge(String startKey, String endKey, double weight) {
-        return addEdge(getThisNode(startKey), getThisNode(endKey), weight);
     }
 
     private boolean deleteEdge(Node startNode, Node endNode) {
-        if (!(hasNode(startNode) && hasNode(endNode))) {
-            throw new NullPointerException("There is no such node");
+        if (!oriented) {
+            if (adjacencyList.get(startNode).containsKey(endNode)) {
+                adjacencyList.get(startNode).remove(endNode);
+                adjacencyList.get(endNode).remove(startNode);
+                return true;
+            }
+            return false;
         } else {
-            if (!oriented) {
-                if (adjacencyList.get(startNode).containsKey(endNode)) {
-                    adjacencyList.get(startNode).remove(endNode);
-                    adjacencyList.get(endNode).remove(startNode);
-                    return true;
-                }
-                return false;
+            if (adjacencyList.get(startNode).containsKey(endNode)) {
+                adjacencyList.get(startNode).remove(endNode);
+                return true;
             } else {
-                if (adjacencyList.get(startNode).containsKey(endNode)) {
-                    adjacencyList.get(startNode).remove(endNode);
-                    return true;
-                } else {
-                    return false;
-                }
+                return false;
             }
         }
-    }
-
-    public boolean deleteEdge(String startKey, String endKey) {
-        return deleteEdge(getThisNode(startKey), getThisNode(endKey));
-    }
-
-    public Set<Node> getNodes() {
-        return adjacencyList.keySet();
     }
 
     private void setNodesUsedFalse() {
         for (Node n : adjacencyList.keySet()) {
             n.setUsed(false);
         }
+    }
+
+    //public
+
+    public boolean hasEdge(String key1, String key2) {
+        Node node1 = getThisNode(key1);
+        Node node2 = getThisNode(key2);
+        if (node1 == null || node2 == null) {
+            throw new NullPointerException("There is no such node");
+        }
+        if (adjacencyList.get(node1).containsKey(node2)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public double getEdgeWeight(String key1, String key2) throws Exception {
+        Node node1 = getThisNode(key1);
+        Node node2 = getThisNode(key2);
+        if (node1 == null || node2 == null) {
+            throw new NullPointerException("There is no such node");
+        }
+        if (weighted) {
+            if (adjacencyList.get(node1).containsKey(node2)) {
+                return adjacencyList.get(node1).get(node2);
+            } else {
+                throw new NullPointerException("There is no such edge");
+            }
+        } else {
+            throw new Exception("Graph is not weighted");
+        }
+    }
+
+    public boolean getWeighted() {
+        return weighted;
+    }
+
+    public boolean addNode(String key) {
+        if (getThisNode(key) == null) {
+            adjacencyList.put(new Node(key), new HashMap<Node, Double>());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Node getNode(String key) {
+        Node node = getThisNode(key);
+        if (node == null) {
+            throw new NullPointerException("There is no such node");
+        } else {
+            return node;
+        }
+    }
+
+    public boolean hasNode(String key) {
+        if (getThisNode(key) != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean deleteNode(String key) {
+        return deleteNode(getThisNode(key));
+    }
+
+    public boolean addEdge(String startKey, String endKey) {
+        Node startNode = getThisNode(startKey);
+        Node endNode = getThisNode(endKey);
+        if (startNode == null || endNode == null) {
+            throw new NullPointerException("There is no such node");
+        } else {
+            return addEdge(startNode, endNode);
+        }
+    }
+
+    public boolean addEdge(String startKey, String endKey, double weight) throws Exception {
+        Node startNode = getThisNode(startKey);
+        Node endNode = getThisNode(endKey);
+        if (!weighted) {
+            throw new Exception("Graph is not weighted");
+        }
+        if (startNode == null || endNode == null) {
+            throw new NullPointerException("There is no such node");
+        } else {
+            return addEdge(startNode, endNode);
+        }
+    }
+
+    public boolean deleteEdge(String startKey, String endKey) {
+        Node startNode = getThisNode(startKey);
+        Node endNode = getThisNode(endKey);
+        if (startNode == null || endNode == null) {
+            throw new NullPointerException("There is no such node");
+        }
+        return deleteEdge(startNode, endNode);
+    }
+
+    public Set<Node> getNodes() {
+        return adjacencyList.keySet();
     }
 
     @Override
@@ -254,7 +286,7 @@ public class Graph {
     //task Ia(17) Wrong
     public boolean doesCallingExist(String startKey, String endKey) {
         if (!(hasNode(startKey) && hasNode(endKey))) {
-            throw new NullPointerException("There is no such a node");
+            throw new NullPointerException("There is no such node");
         } else {
             Set<Node> aSet = adjacencyList.get(getThisNode(startKey)).keySet();
             Set<Node> bSet = adjacencyList.get(getThisNode(endKey)).keySet();
@@ -266,7 +298,7 @@ public class Graph {
     //task Ia(17)
     public boolean doesIssueExist(String startKey, String endKey) {
         if (!(hasNode(startKey) && hasNode(endKey))) {
-            throw new NullPointerException("There is no such a node");
+            throw new NullPointerException("There is no such node");
         } else {
             for (Map.Entry<Node, HashMap<Node, Double>> entry : adjacencyList.entrySet()) {
                 if (entry.getValue().containsKey(getThisNode(startKey)) && entry.getValue().containsKey(getThisNode(endKey))) {
@@ -278,7 +310,6 @@ public class Graph {
     }
 
     //task Ib(8)
-    //Todo remove exception
     public Graph deleteOddEdges() {
         Graph temp = new Graph(this, true);
         for (Map.Entry<Node, HashMap<Node, Double>> entry : temp.adjacencyList.entrySet()) {
@@ -293,17 +324,16 @@ public class Graph {
         return temp;
     }
 
-
     private void convertIntoEdges() {
         edges = new ArrayList<>();
 
         if (oriented) {
-            for (Map.Entry<Node, HashMap<Node, Double>> from : adjacencyList.entrySet()) {
-                for (Map.Entry<Node, Double> to : from.getValue().entrySet()) {
+            for (Map.Entry<Node, HashMap<Node, Double>> nodeStart : adjacencyList.entrySet()) {
+                for (Map.Entry<Node, Double> nodeEnd : nodeStart.getValue().entrySet()) {
                     if (weighted) {
-                        edges.add(new Edge(from.getKey(), to.getKey(), to.getValue(), oriented));
+                        edges.add(new Edge(nodeStart.getKey(), nodeEnd.getKey(), nodeEnd.getValue(), oriented));
                     } else {
-                        edges.add(new Edge(from.getKey(), to.getKey(), oriented));
+                        edges.add(new Edge(nodeStart.getKey(), nodeEnd.getKey(), oriented));
                     }
                 }
             }
@@ -326,16 +356,6 @@ public class Graph {
 
     public ArrayList<Edge> getEdges() {
         convertIntoEdges();
-        ArrayList<Edge> edges = new ArrayList<>();
-        if (weighted) {
-            for (Edge edge : this.edges) {
-                edges.add(new Edge(new Node(edge.getStart()), new Node(edge.getEnd()), edge.getWeight(), oriented));
-            }
-        } else {
-            for (Edge edge : this.edges) {
-                edges.add(new Edge(new Node(edge.getStart()), new Node(edge.getEnd()), oriented));
-            }
-        }
         return edges;
     }
 
@@ -345,20 +365,6 @@ public class Graph {
             if (!n.getUsed()) {
                 graph.addEdge(graph.getThisNode(node.getKey()), graph.getThisNode(n.getKey()));
                 dfs(n, graph);
-            }
-        }
-    }
-
-    private void dfsCycle(Node node, ArrayList<Node> nodes, int timer) {
-        nodes.add(node);
-        node.setUsed(true);
-        node.setTimeIn(timer++);
-        for (Node n : adjacencyList.get(node).keySet()) {
-            if (!n.getUsed()) {
-                dfsCycle(n, nodes, timer);
-            } else if (node.getTimeIn() - n.getTimeIn() > 1) {
-                nodes.add(n);
-                break;
             }
         }
     }
@@ -379,6 +385,20 @@ public class Graph {
             spanningTree = spanningTree.removeIsolated();
         }
         return spanningTree;
+    }
+
+    private void dfsCycle(Node node, ArrayList<Node> nodes, int timer) {
+        nodes.add(node);
+        node.setUsed(true);
+        node.setTimeIn(timer++);
+        for (Node n : adjacencyList.get(node).keySet()) {
+            if (!n.getUsed()) {
+                dfsCycle(n, nodes, timer);
+            } else if (node.getTimeIn() - n.getTimeIn() > 1) {
+                nodes.add(n);
+                break;
+            }
+        }
     }
 
     private ArrayList<Node> getCycle(Node node) {
@@ -518,11 +538,11 @@ public class Graph {
                 }
 
             }
-        }
-        else {
+        } else {
 
         }
     }
+
     public HashMap<Node, HashMap<Node, Double>> minRouteLength() {
         Graph temp = new Graph(this, true);
         HashMap<Node, HashMap<Node, Double>> lengths = new HashMap<>();
@@ -588,7 +608,7 @@ public class Graph {
                         minimalLength);
             }
 
-        } while (tree.getEdges().size() != tree.adjacencyList.keySet().size()-1);
+        } while (tree.getEdges().size() != tree.adjacencyList.keySet().size() - 1);
         return tree;
     }
 }

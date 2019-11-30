@@ -8,7 +8,6 @@ public class Node {
     private String key;
     private boolean used;
     private int timeIn;
-    String color;
 
     public Node(String key) {
         this.key = key;
@@ -43,16 +42,6 @@ public class Node {
     public boolean getUsed() {
         return used;
     }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-
 
     @Override
     public String toString() {

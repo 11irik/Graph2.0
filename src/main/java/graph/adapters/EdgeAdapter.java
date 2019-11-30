@@ -1,20 +1,25 @@
-package graph.wrappers;
+package graph.adapters;
 
 import graph.Edge;
 
 import java.util.ArrayList;
 
-public class EdgeWrapper {
-    NodeWrapper start = null;
-    NodeWrapper end = null;
+public class EdgeAdapter {
+    NodeAdapter start = null;
+    NodeAdapter end = null;
     double weight;
 
-    public EdgeWrapper(Edge edge, ArrayList<NodeWrapper> nodes) {
+    //todo check this kostil
+    public EdgeAdapter(Edge edge, ArrayList<NodeAdapter> nodes) {
 
         if (edge.isWeighted()) {
-            weight = edge.getWeight();
+            try {
+                weight = edge.getWeight();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        for (NodeWrapper node : nodes) {
+        for (NodeAdapter node : nodes) {
             if (node.getNode().getKey() == edge.getStart().getKey()) {
                 start = node;
             }
@@ -31,11 +36,11 @@ public class EdgeWrapper {
         }
     }
 
-    public NodeWrapper getStart() {
+    public NodeAdapter getStart() {
         return start;
     }
 
-    public NodeWrapper getEnd() {
+    public NodeAdapter getEnd() {
         return end;
     }
 

@@ -33,13 +33,12 @@ public class Edge {
         return new Node(end);
     }
 
-    public double getWeight() {
+    public double getWeight() throws Exception {
         if (weighted) {
             return weight;
         }
         else {
-            //TODO CHECK EXCEPTIONS
-            throw new NullPointerException();
+            throw new Exception("This edge is not weighted");
         }
     }
 
@@ -59,10 +58,16 @@ public class Edge {
         this.end = node;
     }
 
-    //todo Exception
-    public void setWeight(double weight) {
-        this.weight = weight;
+    public void setWeight(double weight) throws Exception {
+        if (weighted) {
+            this.weight = weight;
+        }
+        else {
+            throw new Exception("This edge is not weighted");
+        }
     }
+
+    //todo check this moment
 
     @Override
     public boolean equals(Object o) {

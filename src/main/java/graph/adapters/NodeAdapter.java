@@ -1,19 +1,19 @@
-package graph.wrappers;
+package graph.adapters;
 
 import graph.Node;
 
-public class NodeWrapper {
+public class NodeAdapter {
     private Node node;
     private int x;
     private int y;
 
-    public NodeWrapper(Node node, int x, int y) {
+    public NodeAdapter(Node node, int x, int y) {
         this.node = node;
         this.x = x;
         this.y = y;
     }
 
-    public NodeWrapper(NodeWrapper node) {
+    public NodeAdapter(NodeAdapter node) {
         this.node = node.node;
         this.x = node.x;
         this.y = node.y;

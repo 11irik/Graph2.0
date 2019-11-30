@@ -1,7 +1,7 @@
 package gui;
 
 import graph.Graph;
-import graph.wrappers.GraphWrapper;
+import graph.adapters.GraphAdapter;
 import gui.panels.GraphImagePanel;
 import gui.panels.GraphSettingsPanel;
 
@@ -13,7 +13,7 @@ import java.awt.*;
  */
 public class Start extends JFrame {
     Graph graph;
-    public void createGraph() {
+    public void createGraph() throws Exception {
         graph = new Graph(false, true);
         graph.addNode("5");
         graph.addNode("6");
@@ -39,7 +39,7 @@ public class Start extends JFrame {
         System.out.println(graph + "---Before---\n");
     }
 
-    public void createOrGraph() {
+    public void createOrGraph() throws Exception {
         graph = new Graph(true, true);
         graph.addNode("5");
         graph.addNode("6");
@@ -62,7 +62,7 @@ public class Start extends JFrame {
         System.out.println(graph + "---Before---\n");
     }
 
-    public Start() {
+    public Start() throws Exception {
         super("Graph");
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension dimension = toolkit.getScreenSize();
@@ -77,18 +77,18 @@ public class Start extends JFrame {
         workspace.setLayout(gridLayout);
         add(workspace);
 
-        GraphWrapper graphWrapper = new GraphWrapper(graph);
-        GraphImagePanel graphImagePanel = new GraphImagePanel(graphWrapper);
+        GraphAdapter graphAdapter = new GraphAdapter(graph);
+        GraphImagePanel graphImagePanel = new GraphImagePanel(graphAdapter);
         workspace.add(graphImagePanel);
 
 
-        GraphSettingsPanel settingsPanel = new GraphSettingsPanel(graphWrapper);
+        GraphSettingsPanel settingsPanel = new GraphSettingsPanel(graphAdapter);
 
         workspace.add(settingsPanel);
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         new Start();
     }
 

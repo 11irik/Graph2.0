@@ -16,7 +16,7 @@ public class GraphTest {
     Graph graph;
 
     @Before
-    public void createGraph() {
+    public void createGraph() throws Exception {
         graph = new Graph(false, true);
         graph.addNode("5");
         graph.addNode("6");
@@ -43,7 +43,7 @@ public class GraphTest {
     }
 
     //@Before
-    public void createOrGraph() {
+    public void createOrGraph() throws Exception {
         graph = new Graph(true, true);
         graph.addNode("5");
         graph.addNode("6");
