@@ -359,23 +359,25 @@ public class Graph {
         return edges;
     }
 
-    private void dfs(Node node, Graph graph) {
+    private void dfs(Node node, Graph graph, Queue<Node> nodes) {
         node.setUsed(true);
         for (Node n : adjacencyList.get(node).keySet()) {
             if (!n.getUsed()) {
                 graph.addEdge(graph.getThisNode(node.getKey()), graph.getThisNode(n.getKey()));
-                dfs(n, graph);
+                nodes.add(n);
+                dfs(n, graph,  nodes);
             }
         }
     }
 
-    private Graph getSpanningComponent(Node node) {
+    public Queue<Node> getSpanningComponent(Node node) {
         Graph spanningTree = new Graph(this, false);
+        Queue<Node> nodes = new LinkedList<>();
         if (!oriented) {
-            dfs(node, spanningTree);
+            dfs(node, spanningTree, nodes);
         } else {
             for (Node n : adjacencyList.keySet()) {
-                dfs(n, spanningTree);
+                dfs(n, spanningTree, nodes);
             }
         }
         if (spanningTree.adjacencyList.get(spanningTree.getThisNode(node.getKey())).keySet().size() == 0) {
@@ -384,7 +386,8 @@ public class Graph {
         } else {
             spanningTree = spanningTree.removeIsolated();
         }
-        return spanningTree;
+        //return spanningTree;
+        return nodes;
     }
 
     //task II(23)
@@ -543,47 +546,47 @@ public class Graph {
         return temp;
     }
 
-    public Graph boruvka() {
-        Graph tree = new Graph(this);
-        ArrayList<Graph> components;
-        do {
-            components = new ArrayList<>();
-            tree.setNodesUsedFalse();
-            for (Node node : tree.adjacencyList.keySet()) {
-                if (!node.getUsed()) {
-                    components.add(tree.getSpanningComponent(node));
-                    node.setUsed(true);
-                }
-            }
-
-            for (Graph component : components) {
-                setNodesUsedFalse();
-                for (Node node : component.adjacencyList.keySet()) {
-                    this.getThisNode(node.getKey()).setUsed(true);
-                }
-
-                Node start = null;
-                Node end = null;
-                double minimalLength = Double.POSITIVE_INFINITY;
-
-                for (Node node : component.adjacencyList.keySet()) {
-                    Node tempStart = getThisNode(node.getKey());
-                    Node tempEnd = getNearestNeighborFromUnused(getThisNode(node.getKey()));
-                    double tempLength = adjacencyList.get(tempStart).get(tempEnd);
-                    if (minimalLength > tempLength) {
-                        minimalLength = tempLength;
-                        start = tempStart;
-                        end = tempEnd;
-                    }
-                }
-
-                tree.addEdge(tree.getThisNode(start.getKey()), tree.getThisNode(end.getKey()),
-                        minimalLength);
-            }
-
-        } while (tree.getEdges().size() != tree.adjacencyList.keySet().size() - 1);
-        return tree;
-    }
+//    public Graph boruvka() {
+//        Graph tree = new Graph(this);
+//        ArrayList<Graph> components;
+//        do {
+//            components = new ArrayList<>();
+//            tree.setNodesUsedFalse();
+//            for (Node node : tree.adjacencyList.keySet()) {
+//                if (!node.getUsed()) {
+//                    components.add(tree.getSpanningComponent(node));
+//                    node.setUsed(true);
+//                }
+//            }
+//
+//            for (Graph component : components) {
+//                setNodesUsedFalse();
+//                for (Node node : component.adjacencyList.keySet()) {
+//                    this.getThisNode(node.getKey()).setUsed(true);
+//                }
+//
+//                Node start = null;
+//                Node end = null;
+//                double minimalLength = Double.POSITIVE_INFINITY;
+//
+//                for (Node node : component.adjacencyList.keySet()) {
+//                    Node tempStart = getThisNode(node.getKey());
+//                    Node tempEnd = getNearestNeighborFromUnused(getThisNode(node.getKey()));
+//                    double tempLength = adjacencyList.get(tempStart).get(tempEnd);
+//                    if (minimalLength > tempLength) {
+//                        minimalLength = tempLength;
+//                        start = tempStart;
+//                        end = tempEnd;
+//                    }
+//                }
+//
+//                tree.addEdge(tree.getThisNode(start.getKey()), tree.getThisNode(end.getKey()),
+//                        minimalLength);
+//            }
+//
+//        } while (tree.getEdges().size() != tree.adjacencyList.keySet().size() - 1);
+//        return tree;
+//    }
 
     public double getEccentricity() {
         double eccentricity = Double.NEGATIVE_INFINITY;

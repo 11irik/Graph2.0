@@ -3,6 +3,7 @@ package graph.adapters;
 import graph.Graph;
 
 import java.util.ArrayList;
+import java.util.Queue;
 import java.util.Random;
 
 public class GraphAdapter {
@@ -34,6 +35,15 @@ public class GraphAdapter {
         return nodes;
     }
 
+    public NodeAdapter getNode(String key) {
+        for (NodeAdapter node : nodes) {
+            if (node.getKey() == key) {
+                return node;
+            }
+        }
+        return null;
+    }
+
     public boolean addNode(String key) {
         if (graph.addNode(key)) {
             nodes.add(new NodeAdapter(graph.getNode(key), random.nextInt(nodeCoordMax), random.nextInt(nodeCoordMax)));
@@ -42,6 +52,13 @@ public class GraphAdapter {
         else {
             return false;
         }
+    }
+
+    public void removeEdges() {
+        edges = new ArrayList<>();
+    }
+    public void addEdge (EdgeAdapter edge) {
+        edges.add(edge);
     }
 
     public Graph getGraph() {

@@ -5,15 +5,18 @@ import graph.Edge;
 import java.util.ArrayList;
 
 public class EdgeAdapter {
-    NodeAdapter start = null;
-    NodeAdapter end = null;
-    double weight;
+    private NodeAdapter start = null;
+    private NodeAdapter end = null;
+    private double weight;
+    private boolean weighted;
+    private boolean oriented;
 
     //todo check this kostil
     public EdgeAdapter(Edge edge, ArrayList<NodeAdapter> nodes) {
 
         if (edge.isWeighted()) {
             try {
+                weighted = true;
                 weight = edge.getWeight();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -30,10 +33,21 @@ public class EdgeAdapter {
                 break;
             }
         }
+        oriented = edge.isOriented();
         if (start == null || end == null) {
-            //todo exception
             throw new NullPointerException();
         }
+    }
+
+    public EdgeAdapter(NodeAdapter start, NodeAdapter end, boolean weighted, boolean oriented) {
+        this.start = start;
+        this.end = end;
+        this.weighted = weighted;
+        this.oriented = oriented;
+    }
+
+    public boolean isOriented() {
+        return oriented;
     }
 
     public NodeAdapter getStart() {

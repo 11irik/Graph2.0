@@ -160,12 +160,12 @@ public class GraphTest {
         }
     }
 
-    @Test
-    public void boruvka() {
-        if (graph.getWeighted()) {
-            System.out.println(graph.boruvka());
-        }
-    }
+//    @Test
+//    public void boruvka() {
+//        if (graph.getWeighted()) {
+//            System.out.println(graph.boruvka());
+//        }
+//    }
 
     @Test
     public void getEccentricity() {

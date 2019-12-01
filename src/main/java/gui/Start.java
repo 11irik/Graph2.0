@@ -82,7 +82,7 @@ public class Start extends JFrame {
         workspace.add(graphImagePanel);
 
 
-        GraphSettingsPanel settingsPanel = new GraphSettingsPanel(graphAdapter);
+        GraphSettingsPanel settingsPanel = new GraphSettingsPanel(graphAdapter, graphImagePanel);
 
         workspace.add(settingsPanel);
 
