@@ -67,30 +67,7 @@ public class MainFrame extends JFrame {
         menuBar.add(file);
         setJMenuBar(menuBar);
 
-        GridBagLayout rbl = new GridBagLayout();
         WorkspacePanel workspace = new WorkspacePanel(graph);
-        workspace.setLayout(rbl);
-
-        GridBagConstraints c = new GridBagConstraints();
-
-        GraphImagePanel graphImagePanel = new GraphImagePanel(graph);
-        c.weightx = 1920;
-        c.weighty = 1080;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridheight = 2;
-        c.gridwidth = 2;
-        c.fill = GridBagConstraints.BOTH;
-        workspace.add(graphImagePanel, c);
-
-        c.weightx = 0;
-        c.weighty = 0;
-        c.gridx = 3;
-        c.gridy = 0;
-        c.gridheight = 1;
-        c.gridwidth = 3;
-        workspace.add(new GraphSettingsPanel(graph, graphImagePanel), c);
-
         add(workspace);
     }
 }
