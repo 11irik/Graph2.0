@@ -9,6 +9,10 @@ public class Node {
     private boolean used;
     private int timeIn;
 
+    public Node() {
+
+    }
+
     public Node(String key) {
         this.key = key;
         used = false;

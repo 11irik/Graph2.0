@@ -50,6 +50,10 @@ public class EdgeAdapter {
         return oriented;
     }
 
+    public boolean isWeighted() {
+        return weighted;
+    }
+
     public NodeAdapter getStart() {
         return start;
     }

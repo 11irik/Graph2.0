@@ -139,7 +139,7 @@ public class GraphTest {
     //Task Ib(8)
     @Test
     public void deleteOddEdges() {
-        System.out.println(graph.deleteOddEdges());
+       // System.out.println(graph.deleteOddEdges());
     }
 
     @Test

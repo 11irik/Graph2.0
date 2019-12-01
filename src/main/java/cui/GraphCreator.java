@@ -1,5 +1,8 @@
 package cui;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import graph.Graph;
@@ -14,7 +17,28 @@ public class GraphCreator {
     private static Scanner in = new Scanner(System.in);
     private static String[] methodNames = {"Create graph - 1", "Deserialize - 2", "Serialize - 3", "Show graph - 4", "Graph editor - 5"};
 
-    public GraphCreator() {
+    public GraphCreator() throws Exception {
+        graph = new Graph(true, true);
+        graph.addNode("5");
+        graph.addNode("6");
+        graph.addNode("2");
+        graph.addNode("1");
+        graph.addNode("10");
+        graph.addNode("11");
+        graph.addNode("9");
+        graph.addNode("12");
+
+
+        graph.addEdge("5", "6", 6);
+        graph.addEdge("5", "2", 9);
+        graph.addEdge("6", "2", 12);
+        graph.addEdge("5", "11", 3);
+        graph.addEdge("11", "1", 10);
+        graph.addEdge("1", "10", 20);
+        graph.addEdge("2", "9", 7);
+        graph.addEdge("10", "9", 13);
+        graph.addEdge("10", "12", 8);
+        graph.addEdge("11", "12", 14);
     }
 
     public static void name() {
@@ -38,6 +62,7 @@ public class GraphCreator {
         int n = 1;
         while (n != 0) {
             Gson gson = new GsonBuilder().create();
+            Kryo kryo = new Kryo();
 
             System.out.println("Enter n: ");
             n = in.nextInt();
@@ -54,8 +79,8 @@ public class GraphCreator {
                     break;
                 case (2):
                     System.out.println("Enter file name");
-                    try (Reader reader = new FileReader(in.next())) {
-                        graph = gson.fromJson(reader, Graph.class);
+                    try (Input input = new Input(new FileInputStream("file.dat"))) {
+                        graph = (Graph) kryo.readClassAndObject(input);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                         System.out.println("Exception was processed. Program continues");
@@ -65,8 +90,8 @@ public class GraphCreator {
                     break;
                 case (3):
                     System.out.println("Enter file name");
-                    try (Writer writer = new FileWriter(in.next())) {
-                        gson.toJson(graph, writer);
+                    try (Output output = new Output(new FileOutputStream("file.dat"))) {
+                        kryo.writeClassAndObject(output, graph);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

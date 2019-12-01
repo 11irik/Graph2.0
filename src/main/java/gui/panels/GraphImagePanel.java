@@ -1,6 +1,5 @@
 package gui.panels;
 
-import graph.Edge;
 import graph.Node;
 import graph.adapters.EdgeAdapter;
 import graph.adapters.GraphAdapter;
@@ -18,20 +17,20 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     ArrayList<EdgeAdapter> visitedEdges = new ArrayList<>();
     ArrayList<NodeAdapter> visitedNodes = new ArrayList<>();
 
-    private static final Font[] KEY_FONT = new Font[30];
-    public static int X_SHIFT = 10;
-    public static int Y_SHIFT = 40;
-    int nodeSize;
-    double maxValue = 500;
-    double mf;
+    //Graphics attributes
+    private Font[] keyFont = new Font[30];
+    private int nodeSize;;
+    private double aspect;
+    private int maxNodeRandom = 500;
     protected float regularWidth = 0.5f;
 
+    //Graphical Thread
     GraphWorker graphWorker;
     boolean drawAlg = false;
 
+    //Interactive attributes
     NodeAdapter selectedNode;
     boolean selected = false;
-
 
     public GraphImagePanel(GraphAdapter graphAdapter) {
         this.graph = graphAdapter;
@@ -45,41 +44,40 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        mf = Math.min(g.getClipBounds().height, g.getClipBounds().width) / 500;
+        aspect = Math.min(g.getClipBounds().height, g.getClipBounds().width) / maxNodeRandom;
         Graphics2D g2 = (Graphics2D) g;
 
-        graph.getEdges().forEach(edge -> drawEdge(g, edge, Color.BLACK, mf));
-//        if (drawAlg) {
-//            visitedEdges.forEach(edge -> drawEdge(g, edge, Color.RED));
-//        }
+        graph.getEdges().forEach(edge -> drawEdge(g, edge, Color.BLACK, aspect));
+        if (drawAlg) {
+            visitedEdges.forEach(edge -> drawEdge(g, edge, Color.RED, aspect));
+        }
 
         g2.setStroke(new BasicStroke(regularWidth));
-        graph.getNodes().forEach(node -> drawNode(g2, (node), Color.BLUE, mf));
+        graph.getNodes().forEach(node -> drawNode(g2, (node), Color.BLUE, aspect));
 
         //visitedNodes.forEach(node -> drawNode(g, node, Color.CYAN));
     }
 
 
-    private void drawNode(Graphics g, NodeAdapter node, Color color, double mf) {
-        nodeSize = (int) mf * 500 / 8;
+    private void drawNode(Graphics g, NodeAdapter node, Color color, double aspect) {
+        nodeSize = (int) aspect * maxNodeRandom / 8;
         Graphics2D g2 = (Graphics2D) g;
 
         g2.setColor(color);
-        g.fillOval((int) (node.getX() * mf - nodeSize / 2), (int) (node.getY() * mf - nodeSize / 2), nodeSize, nodeSize);
+        g.fillOval((int) (node.getX() * aspect - nodeSize / 2), (int) (node.getY() * aspect - nodeSize / 2), nodeSize, nodeSize);
         g2.setColor(Color.BLACK);
-        g.drawOval((int) (node.getX() * mf - nodeSize / 2), (int) (node.getY() * mf - nodeSize / 2), nodeSize, nodeSize);
+        g.drawOval((int) (node.getX() * aspect - nodeSize / 2), (int) (node.getY() * aspect - nodeSize / 2), nodeSize, nodeSize);
 
-        g.setFont(KEY_FONT[(int) (8 * mf)]);
+        g.setFont(keyFont[(int) (8 * aspect)]);
         FontMetrics fontMetrics = g.getFontMetrics();
         int width = fontMetrics.stringWidth("" + node.getKey());
         //todo magic with string
-        g.drawString("" + node.getKey(), (int) (node.getX() * mf) + (nodeSize / 8 - width) / 2, (int) (node.getY() * mf) + nodeSize / 4);
+        g.drawString("" + node.getKey(), (int) (node.getX() * aspect) + (nodeSize / 8 - width) / 2, (int) (node.getY() * aspect) + nodeSize / 4);
     }
 
-    public void drawEdge(Graphics g, EdgeAdapter edge, Color color, double mf) {
+    public void drawEdge(Graphics g, EdgeAdapter edge, Color color, double aspect) {
 
         Graphics2D g2 = (Graphics2D) g;
-        double w = Math.min(g.getClipBounds().height, g.getClipBounds().width);
         g2.setColor(color);
         Stroke stroke = new BasicStroke(2f);
         g2.setStroke(stroke);
@@ -88,21 +86,28 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         NodeAdapter end = edge.getEnd();
 
         g2.drawLine(
-                (int) (start.getX() *mf),
-                (int) (start.getY() * mf),
-                (int) (end.getX() * mf),
-                (int) (end.getY() * mf)
+                (int) (start.getX() *aspect),
+                (int) (start.getY() * aspect),
+                (int) (end.getX() * aspect),
+                (int) (end.getY() * aspect)
         );
+
+        if (edge.isWeighted()) {
+            g.setFont(keyFont[(int) (8 * aspect)]);
+            int x = (start.getX() + end.getX()) / 2;
+            int y = (start.getY() + end.getY()) / 2;
+            g.drawString("" + edge.getWeight(), (int)(x * aspect), (int) (y * aspect));
+        }
 
         if (edge.isOriented()) {
             int deltaY = end.getY() - start.getY();
             int deltaX = end.getX() - start.getX();
-            int edgeLength = (int) Math.sqrt(deltaX * deltaX + deltaY * deltaY) - (int) (nodeSize / 2 / mf);
+            int edgeLength = (int) Math.sqrt(deltaX * deltaX + deltaY * deltaY) - (int) (nodeSize / 2 / aspect);
 
             double angle = Math.atan2(deltaY, deltaX);
             double angleDelta = 2 * Math.PI / 20;
             int arrowArmLength = 20;
-            if (edgeLength < nodeSize * 2 / mf) {
+            if (edgeLength < nodeSize * 2 / aspect) {
                 arrowArmLength = edgeLength / 3;
             }
             int nodeContactX = start.getX() + (int) (Math.cos(angle) * (edgeLength));
@@ -115,17 +120,17 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
             int rightArrowArmY = nodeContactY - (int) (Math.sin(angle + angleDelta) * arrowArmLength);
 
             g2.drawLine(
-                    (int) (nodeContactX * mf),
-                    (int) (nodeContactY * mf),
-                    (int) (leftArrowArmX * mf),
-                    (int) (leftArrowArmY * mf)
+                    (int) (nodeContactX * aspect),
+                    (int) (nodeContactY * aspect),
+                    (int) (leftArrowArmX * aspect),
+                    (int) (leftArrowArmY * aspect)
             );
 
             g2.drawLine(
-                    (int) (nodeContactX * mf),
-                    (int) (nodeContactY * mf),
-                    (int) (rightArrowArmX * mf),
-                    (int) (rightArrowArmY * mf)
+                    (int) (nodeContactX * aspect),
+                    (int) (nodeContactY * aspect),
+                    (int) (rightArrowArmX * aspect),
+                    (int) (rightArrowArmY * aspect)
             );
         }
     }
@@ -186,8 +191,8 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     private NodeAdapter selectNodeFromCoords(int x, int y) {
         NodeAdapter node = null;
         for (NodeAdapter n : graph.getNodes()) {
-            if (Math.abs(n.getX() * mf - x) < nodeSize / 2 &&
-                    Math.abs(n.getY() * mf - y) < nodeSize / 2) {
+            if (Math.abs(n.getX() * aspect - x) < nodeSize / 2 &&
+                    Math.abs(n.getY() * aspect - y) < nodeSize / 2) {
                 node = n;
             }
         }
@@ -200,8 +205,8 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     public void mousePressed(MouseEvent e) {
         try {
             selectedNode = selectNodeFromCoords(e.getX(), e.getY());
-            selectedNode.setX((int) (e.getX() / mf));
-            selectedNode.setY((int) (e.getY() / mf));
+            selectedNode.setX((int) (e.getX() / aspect));
+            selectedNode.setY((int) (e.getY() / aspect));
             selected = true;
             repaint();
         } catch (Exception k) {
@@ -216,8 +221,8 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     @Override
     public void mouseDragged(MouseEvent e) {
         if (selected) {
-            selectedNode.setX((int) (e.getX() / mf));
-            selectedNode.setY((int) (e.getY() / mf));;
+            selectedNode.setX((int) (e.getX() / aspect));
+            selectedNode.setY((int) (e.getY() / aspect));;
             repaint();
         }
     }

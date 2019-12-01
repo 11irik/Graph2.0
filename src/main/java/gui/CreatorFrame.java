@@ -1,28 +1,23 @@
-package gui.panels;
+package gui;
 
-import graph.Edge;
-import graph.Node;
-import graph.adapters.EdgeAdapter;
 import graph.adapters.GraphAdapter;
-import graph.adapters.NodeAdapter;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Queue;
 
-public class GraphSettingsPanel extends JPanel {
-
+public class CreatorFrame extends JFrame {
     GraphAdapter graphAdapter;
 
-    public GraphSettingsPanel(GraphAdapter graphAdapter, GraphImagePanel graph) {
+    public CreatorFrame(GraphAdapter graphAdapter) {
+
         this.graphAdapter = graphAdapter;
         JButton refresh = new JButton("Rebuild");
         refresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 graphAdapter.refresh();
-                graph.repaint();
+                //graph.repaint();
             }
         });
 
@@ -30,12 +25,12 @@ public class GraphSettingsPanel extends JPanel {
         path.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                graph.executeStart();
+                //graph.executeStart();
             }
         });
 
         add(refresh);
-        add(path);
 
+        add(path);
     }
 }

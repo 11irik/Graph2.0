@@ -1,7 +1,5 @@
 package gui;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import graph.Graph;
 import graph.adapters.GraphAdapter;
 import gui.panels.GraphImagePanel;
@@ -9,9 +7,11 @@ import gui.panels.GraphSettingsPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-/**
+/**    kryo = new Kryo();
+
  * The main window of the application
  */
 public class Start extends JFrame {
@@ -67,7 +67,7 @@ public class Start extends JFrame {
 
     public Start() throws Exception {
         super("Graph");
-        setSize(1920, 1080);
+        setSize(1300, 700);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
 
@@ -78,6 +78,24 @@ public class Start extends JFrame {
 
         createGraph();
         GraphAdapter graphAdapter = new GraphAdapter(graph);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu file = new JMenu("File");
+        JMenuItem fileNew = new JMenuItem("New");
+
+        fileNew.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                CreatorFrame creatorFrame = new CreatorFrame(graphAdapter);
+                creatorFrame.setSize(1300, 700);
+                creatorFrame.setVisible(true);
+            }
+        });
+
+        file.add(fileNew);
+
+        menuBar.add(file);
+        setJMenuBar(menuBar);
 
         GraphImagePanel graphImagePanel = new GraphImagePanel(graphAdapter);
         workspace.add(graphImagePanel);
