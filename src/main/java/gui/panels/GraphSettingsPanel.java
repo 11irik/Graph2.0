@@ -34,8 +34,17 @@ public class GraphSettingsPanel extends JPanel {
             }
         });
 
+        JButton upd = new JButton("Update");
+        path.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                graph.repaint();
+            }
+        });
+
         add(refresh);
         add(path);
+        add(upd);
 
     }
 }

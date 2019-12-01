@@ -17,28 +17,7 @@ public class GraphCreator {
     private static Scanner in = new Scanner(System.in);
     private static String[] methodNames = {"Create graph - 1", "Deserialize - 2", "Serialize - 3", "Show graph - 4", "Graph editor - 5"};
 
-    public GraphCreator() throws Exception {
-        graph = new Graph(true, true);
-        graph.addNode("5");
-        graph.addNode("6");
-        graph.addNode("2");
-        graph.addNode("1");
-        graph.addNode("10");
-        graph.addNode("11");
-        graph.addNode("9");
-        graph.addNode("12");
-
-
-        graph.addEdge("5", "6", 6);
-        graph.addEdge("5", "2", 9);
-        graph.addEdge("6", "2", 12);
-        graph.addEdge("5", "11", 3);
-        graph.addEdge("11", "1", 10);
-        graph.addEdge("1", "10", 20);
-        graph.addEdge("2", "9", 7);
-        graph.addEdge("10", "9", 13);
-        graph.addEdge("10", "12", 8);
-        graph.addEdge("11", "12", 14);
+    public GraphCreator() {
     }
 
     public static void name() {

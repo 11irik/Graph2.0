@@ -14,6 +14,12 @@ public class GraphAdapter {
     Random random = new Random();
     int nodeCoordMax = 500;
 
+    public GraphAdapter() {
+        graph = new Graph();
+        nodes = new ArrayList<>();
+        edges = new ArrayList<>();
+    }
+
     public GraphAdapter(Graph graph) {
         this.graph = graph;
         nodes = new ArrayList<>();
