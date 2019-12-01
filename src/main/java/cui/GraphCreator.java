@@ -56,7 +56,7 @@ public class GraphCreator {
                     System.out.println("Enter file name");
                     try (Reader reader = new FileReader(in.next())) {
                         graph = gson.fromJson(reader, Graph.class);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                         System.out.println("Exception was processed. Program continues");
                         name();
@@ -67,7 +67,7 @@ public class GraphCreator {
                     System.out.println("Enter file name");
                     try (Writer writer = new FileWriter(in.next())) {
                         gson.toJson(graph, writer);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
@@ -88,6 +88,8 @@ public class GraphCreator {
                     catch (NullPointerException e) {
                         System.out.println(e.getMessage());
                         System.out.println("Exception was processed. Program continues");
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     name();
                     help();

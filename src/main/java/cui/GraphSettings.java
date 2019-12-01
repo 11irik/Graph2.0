@@ -34,7 +34,7 @@ public class GraphSettings {
         System.out.println(s);
     }
 
-    public void c() {
+    public void c() throws Exception {
         name();
         help();
         int n = 1;
@@ -44,16 +44,16 @@ public class GraphSettings {
             switch (n) {
                 case (1):
                     System.out.println("Enter node: ");
-                   // graph.addNode(in.next());
+                    graph.addNode(in.next());
                     break;
                 case (2):
                     if (graph.getWeighted()) {
                         System.out.println("Enter nodes a, b and weight: ");
-                       // graph.addEdge(in.next(), in.next(), in.nextDouble());
+                        graph.addEdge(in.next(), in.next(), in.nextDouble());
                     }
                     else{
                         System.out.println("Enter nodes a and b: ");
-                       // graph.addEdge(in.next(), in.next());
+                        graph.addEdge(in.next(), in.next());
                     }
                     break;
                 case (3):

@@ -1,6 +1,11 @@
 package graph;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.*;
+
 
 public class Graph {
 
@@ -54,6 +59,26 @@ public class Graph {
                 }
             }
         }
+    }
+
+    public HashMap<Node, HashMap<Node, Double>> getAdjacencies() {
+        adjacencyList = new HashMap<>();
+        for (Node key : adjacencyList.keySet()) {
+            this.adjacencyList.put(new Node(key), new HashMap<>());
+        }
+        for (Node node : this.adjacencyList.keySet()) {
+            for (Node adjacencyNode : this.adjacencyList.keySet()) {
+                if (hasEdge(node.getKey(), adjacencyNode.getKey())) {
+                    if (weighted) {
+                        addEdge(node, adjacencyNode, adjacencyList.get(getThisNode(node.getKey())).get(getThisNode(adjacencyNode.getKey())));
+                    } else {
+                        addEdge(node, adjacencyNode);
+                    }
+                }
+
+            }
+        }
+        return adjacencyList;
     }
 
     private boolean hasNode(Node node) {
@@ -173,6 +198,10 @@ public class Graph {
 
     public boolean getWeighted() {
         return weighted;
+    }
+
+    public Boolean getOriented() {
+        return oriented;
     }
 
     public boolean addNode(String key) {

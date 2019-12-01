@@ -1,5 +1,7 @@
 package gui;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import graph.Graph;
 import graph.adapters.GraphAdapter;
 import gui.panels.GraphImagePanel;
@@ -7,6 +9,7 @@ import gui.panels.GraphSettingsPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 
 /**
  * The main window of the application
@@ -71,6 +74,21 @@ public class Start extends JFrame {
         setVisible(true);
 
         createGraph();
+
+        Gson gson = new GsonBuilder().create();
+
+        try (Writer writer = new FileWriter("graph.json")) {
+            gson.toJson(graph, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (Reader reader = new FileReader("graph.json")) {
+            graph = gson.fromJson(reader, Graph.class);
+        } catch (IOException e) {
+        }
+
+
 
         GridLayout gridLayout = new GridLayout(0, 2);
         JPanel workspace = new JPanel();
