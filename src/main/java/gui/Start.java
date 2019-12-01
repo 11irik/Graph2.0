@@ -17,7 +17,7 @@ import java.io.*;
 public class Start extends JFrame {
     Graph graph;
     public void createGraph() throws Exception {
-        graph = new Graph(false, true);
+        graph = new Graph(true, true);
         graph.addNode("5");
         graph.addNode("6");
         graph.addNode("2");
@@ -67,43 +67,23 @@ public class Start extends JFrame {
 
     public Start() throws Exception {
         super("Graph");
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension dimension = toolkit.getScreenSize();
-        setBounds(dimension.width/8, dimension.height/8, dimension.width/4, dimension.height/2);
+        setSize(1920, 1080);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
-
-        createGraph();
-
-        Gson gson = new GsonBuilder().create();
-
-        try (Writer writer = new FileWriter("graph.json")) {
-            gson.toJson(graph, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try (Reader reader = new FileReader("graph.json")) {
-            graph = gson.fromJson(reader, Graph.class);
-        } catch (IOException e) {
-        }
-
-
 
         GridLayout gridLayout = new GridLayout(0, 2);
         JPanel workspace = new JPanel();
         workspace.setLayout(gridLayout);
         add(workspace);
 
+        createGraph();
         GraphAdapter graphAdapter = new GraphAdapter(graph);
+
         GraphImagePanel graphImagePanel = new GraphImagePanel(graphAdapter);
         workspace.add(graphImagePanel);
 
-
         GraphSettingsPanel settingsPanel = new GraphSettingsPanel(graphAdapter, graphImagePanel);
-
         workspace.add(settingsPanel);
-
     }
 
     public static void main(String[] args) throws Exception {

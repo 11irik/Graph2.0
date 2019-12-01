@@ -21,7 +21,7 @@ public class GraphSettingsPanel extends JPanel {
         refresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                graphAdapter.refresh();
+                graph.reset();
                 graph.repaint();
             }
         });
@@ -33,7 +33,17 @@ public class GraphSettingsPanel extends JPanel {
                 graph.executeStart();
             }
         });
+
+        JButton stop = new JButton("Stop");
+        path.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                //graph.executeStop();
+            }
+        });
+
         add(refresh);
         add(path);
+        add(stop);
     }
 }

@@ -12,7 +12,7 @@ public class GraphAdapter {
     ArrayList<EdgeAdapter> edges;
 
     Random random = new Random();
-    int nodeCoordMax = 100000;
+    int nodeCoordMax = 500;
 
     public GraphAdapter(Graph graph) {
         this.graph = graph;
