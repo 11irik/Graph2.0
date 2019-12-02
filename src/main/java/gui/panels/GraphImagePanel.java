@@ -1,5 +1,6 @@
 package gui.panels;
 
+import graph.Generator;
 import graph.Node;
 import graph.adapters.EdgeAdapter;
 import graph.adapters.GraphAdapter;
@@ -32,10 +33,17 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     NodeAdapter selectedNode;
     boolean selected = false;
 
-    public GraphImagePanel(GraphAdapter graphAdapter) {
-        this.graph = graphAdapter;
+    public GraphImagePanel(GraphAdapter graphAdapter) throws Exception {
+        //this.graph = graphAdapter;
+
+        //todo testing generator remove exceptions
+
+            this.graph = new GraphAdapter(new Generator(10, true, true).nextBigraph(0));
+
+
         addMouseListener(this);
         addMouseMotionListener(this);
+
 
         setBorder(BorderFactory.createEtchedBorder());
         setBackground(new Color(200, 200, 200));
