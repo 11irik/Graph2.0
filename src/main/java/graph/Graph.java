@@ -14,8 +14,6 @@ public class Graph {
     private HashMap<Node, HashMap<Node, Double>> adjacencyList;
     private ArrayList<Edge> edges;
 
-
-
     public Graph() {
         adjacencyList = new HashMap<>();
         oriented = false;

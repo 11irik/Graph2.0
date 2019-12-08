@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class WorkspacePanel extends JPanel {
-    public WorkspacePanel(GraphAdapter graph) {
+    public WorkspacePanel(GraphAdapter graph) throws Exception {
         GridBagLayout gridBagLayout = new GridBagLayout();
         this.setLayout(gridBagLayout);
         GridBagConstraints c = new GridBagConstraints();
