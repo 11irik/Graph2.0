@@ -1,9 +1,15 @@
 package graph;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.*;
 import java.util.*;
 
 
@@ -42,7 +48,7 @@ public class Graph {
         weighted = graph.weighted;
 
         for (Node key : graph.adjacencyList.keySet()) {
-            this.adjacencyList.put(new Node(key), new HashMap<>());
+            this.adjacencyList.put(key, new HashMap<>());
         }
 
         if (copyEdges) {
@@ -270,6 +276,48 @@ public class Graph {
         return adjacencyList.keySet();
     }
 
+//    public static void serialize(Graph graph, String filePath) {
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        try (Writer writer = new FileWriter(filePath)) {
+//            gson.toJson(graph, writer);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public static Graph deserialize(String filePath) {
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        Graph graph = new Graph();
+//        try (Reader reader = new FileReader(filePath)) {
+//            graph = gson.fromJson(reader, Graph.class);
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//            System.out.println("Exception was processed. Program continues");
+//        }
+//        return graph;
+//    }
+
+    public static void serialize(Graph graph, String filePath) {
+        Kryo kryo = new Kryo();
+        try (Output output = new Output(new FileOutputStream(filePath))) {
+            kryo.writeClassAndObject(output, graph);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Graph deserialize(String filePath) {
+        Graph graph = new Graph();
+        Kryo kryo = new Kryo();
+
+        try (Input input = new Input(new FileInputStream(filePath))) {
+            graph = (Graph) kryo.readClassAndObject(input);
+        } catch (Exception e) {
+
+        }
+        return graph;
+    }
+
     @Override
     public java.lang.String toString() {
         StringBuilder s = new StringBuilder();
@@ -465,8 +513,6 @@ public class Graph {
     }
 
     private HashMap<Node, Double> dijkstra(Node node) {
-        //ArrayList<ArrayList<Node>> route = new ArrayList<>();
-
         HashSet<Node> unusedNodes = new HashSet<>(adjacencyList.keySet());
         HashMap<Node, Double> distances = new HashMap<>();
         double inf = Double.POSITIVE_INFINITY;
@@ -617,20 +663,111 @@ public class Graph {
 //        return tree;
 //    }
 
-    public double getEccentricity() {
-        double eccentricity = Double.NEGATIVE_INFINITY;
-        double radius = Double.POSITIVE_INFINITY;
+
+    private Graph revertEdges() {
+        Graph graph = new Graph(this, false);
         for (Node node : adjacencyList.keySet()) {
-            for (Double distance : dijkstra(node).values()) {
+            for (Node end : adjacencyList.get(node).keySet()) {
+                graph.addEdge(end, node, adjacencyList.get(node).get(end));
+            }
+        }
+        return graph;
+    }
+
+    public double getEccentricity() {
+        Graph temp;
+        if (oriented) {
+            temp = revertEdges();
+        } else {
+            temp = this;
+        }
+        double radius = Double.POSITIVE_INFINITY;
+        for (Node node : temp.adjacencyList.keySet()) {
+            double eccentricity = Double.NEGATIVE_INFINITY;
+            for (Double distance : temp.dijkstra(node).values()) {
                 if (eccentricity < distance) {
                     eccentricity = distance;
                 }
             }
-            if (eccentricity < radius) {
+            if (eccentricity < radius && eccentricity != Double.POSITIVE_INFINITY) {
                 radius = eccentricity;
             }
         }
         return radius;
+    }
+
+    public HashMap<Node, Double> ford(String nodeStart, String nodeEnd) {
+        Node begin = this.getNode(nodeStart);
+        Node end = this.getNode(nodeEnd);
+        HashMap<Node, Double> distances = new HashMap<>();
+        double inf = Double.POSITIVE_INFINITY;
+        for (Node adj : adjacencyList.keySet()) {
+            distances.put(adj, inf);
+        }
+        distances.put(begin, 0.0);
+
+
+        for (int i = 1; i < adjacencyList.keySet().size() - 1; ++i) {
+            for (Node u : adjacencyList.keySet()) {
+                for (Node v : adjacencyList.get(u).keySet()) {
+                    double distance = distances.get(u) + adjacencyList.get(u).get(v);
+                    if (v == end) {
+                        System.out.println(distance);
+                    }
+                    if (distances.get(v) > distance) {
+                        distances.put(v, distance);
+                    }
+                }
+            }
+        }
+
+        return distances;
+    }
+
+
+    public void floyd() {
+        HashMap<Node, HashMap<Node, Double>> distances = new HashMap<>();
+        double inf = Double.POSITIVE_INFINITY;
+
+        for (Node node1 : adjacencyList.keySet()) {
+            HashMap<Node, Double> map = new HashMap<>();
+            for (Node node2 : adjacencyList.keySet()) {
+                map.put(node2, Double.POSITIVE_INFINITY);
+            }
+            distances.put(node1, map);
+            distances.get(node1).put(node1, 0.0);
+        }
+
+        for (Node st : adjacencyList.keySet()) {
+            for (Node nd : adjacencyList.get(st).keySet()) {
+                distances.get(st).put(nd, adjacencyList.get(st).get(nd));
+            }
+        }
+
+        for (Node k : adjacencyList.keySet()) {
+            for (Node i : adjacencyList.keySet()) {
+                for (Node j : adjacencyList.keySet()) {
+                        double min = Math.min(distances.get(i).get(j), distances.get(i).get(k) + distances.get(k).get(j));
+                        distances.get(i).put(j, min);
+                }
+            }
+        }
+
+        for (Node k : adjacencyList.keySet()) {
+            for (Node i : adjacencyList.keySet()) {
+                for (Node j : adjacencyList.keySet()) {
+                    if (distances.get(i).get(k) < inf && distances.get(k).get(j) < inf && distances.get(j).get(j) < 0) {
+                        //double min = Math.min(distances.get(i).get(j), distances.get(i).get(k) + distances.get(k).get(j));
+                        distances.get(i).put(j, Double.NEGATIVE_INFINITY);
+                    }
+                }
+            }
+        }
+
+        for (Node k : adjacencyList.keySet()) {
+            System.out.println(k + ": " + distances.get(k));
+        }
+
     }
 
 }

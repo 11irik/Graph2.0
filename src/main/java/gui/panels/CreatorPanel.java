@@ -25,18 +25,10 @@ public class CreatorPanel extends JPanel {
         refresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                Kryo kryo = new Kryo();
-
-                try (Input input = new Input(new FileInputStream("file.dat"))) {
-                    graph = (Graph) kryo.readClassAndObject(input);
-                } catch (Exception e) {
-
-                }
+                graph = Graph.deserialize("file.dat");
                 graphAdapter.setGraph(graph);
-
             }
         });
-         int test;
 
         JButton path = new JButton("Animate");
         path.addActionListener(new ActionListener() {

@@ -34,11 +34,7 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     boolean selected = false;
 
     public GraphImagePanel(GraphAdapter graphAdapter) throws Exception {
-        //this.graph = graphAdapter;
-
-        //todo testing generator remove exceptions
-
-            this.graph = new GraphAdapter(new Generator(10, true, true).nextBigraph(0));
+        this.graph = graphAdapter;
 
 
         addMouseListener(this);
