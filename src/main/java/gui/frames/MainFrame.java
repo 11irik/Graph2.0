@@ -69,5 +69,6 @@ public class MainFrame extends JFrame {
 
         WorkspacePanel workspace = new WorkspacePanel(graph);
         add(workspace);
+        revalidate();
     }
 }
