@@ -36,7 +36,7 @@ public class CreatorPanel extends JPanel {
 
             }
         });
-
+         int test;
 
         JButton path = new JButton("Animate");
         path.addActionListener(new ActionListener() {
