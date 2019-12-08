@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -88,13 +89,13 @@ public class GraphTest {
 
     @Test
     public void serialize() {
-        Graph.serialize(graph, "test.dat");
+        File file = new File("/home/kirill/Documents/test");
+        Graph.serialize(graph, file);
+        graph = Graph.deserialize(file);
+        System.out.println(graph.toString());
     }
 
-    @Test
-    public void deserialize() {
-        graph = Graph.deserialize("test.dat");
-    }
+
 
     @Test
     public void testDeleteNode() {

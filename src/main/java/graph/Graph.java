@@ -297,23 +297,23 @@ public class Graph {
 //        return graph;
 //    }
 
-    public static void serialize(Graph graph, String filePath) {
+    public static void serialize(Graph graph, File file) {
         Kryo kryo = new Kryo();
-        try (Output output = new Output(new FileOutputStream(filePath))) {
+        try (Output output = new Output(new FileOutputStream(file))) {
             kryo.writeClassAndObject(output, graph);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static Graph deserialize(String filePath) {
+    public static Graph deserialize(File file) {
         Graph graph = new Graph();
         Kryo kryo = new Kryo();
 
-        try (Input input = new Input(new FileInputStream(filePath))) {
+        try (Input input = new Input(new FileInputStream(file))) {
             graph = (Graph) kryo.readClassAndObject(input);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return graph;
     }
@@ -767,8 +767,27 @@ public class Graph {
         for (Node k : adjacencyList.keySet()) {
             System.out.println(k + ": " + distances.get(k));
         }
-
     }
+
+
+//    Node t;
+//    double maxFlow;
+//
+//    void dfs(Node v, int curflow) {
+//        if (t == v) {
+//
+//        }
+//        v.setUsed(true);
+//
+//        for
+//
+//    }
+//
+//    public void findFlow() {
+//        convertIntoEdges();
+//
+//        int maxflow = 0;
+//    }
 
 }
 

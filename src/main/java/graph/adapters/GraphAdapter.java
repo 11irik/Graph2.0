@@ -29,6 +29,10 @@ public class GraphAdapter {
         graph.getEdges().forEach(edge -> edges.add(new EdgeAdapter(edge, nodes)));
     }
 
+    public void setNodeCoordMax(int nodeCoordMax) {
+        this.nodeCoordMax = nodeCoordMax;
+    }
+
     public GraphAdapter(GraphAdapter graph) {
         this(graph.graph);
     }
@@ -60,6 +64,16 @@ public class GraphAdapter {
         }
     }
 
+    public boolean addNode(String key, int x, int y) {
+        if (graph.addNode(key)) {
+            nodes.add(new NodeAdapter(graph.getNode(key), x, y));
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     public void removeEdges() {
         edges = new ArrayList<>();
     }
@@ -68,7 +82,7 @@ public class GraphAdapter {
     }
 
     public Graph getGraph() {
-        return graph;
+        return this.graph;
     }
 
     public void setGraph(Graph graph) {

@@ -43,8 +43,7 @@ public class GraphSettingsPanel extends JPanel {
         });
 
         add(refresh);
-        add(path);
-        add(upd);
-
+//        add(path);
+//        add(upd);
     }
 }
