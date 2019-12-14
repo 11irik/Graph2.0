@@ -5,6 +5,8 @@ import graph.Node;
 import graph.adapters.EdgeAdapter;
 import graph.adapters.GraphAdapter;
 import graph.adapters.NodeAdapter;
+import gui.popups.PopClickListener;
+import gui.popups.PopUpTest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +19,8 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     protected GraphAdapter graph;
     ArrayList<EdgeAdapter> visitedEdges = new ArrayList<>();
     ArrayList<NodeAdapter> visitedNodes = new ArrayList<>();
+
+
 
     //Graphics attributes
     private Font[] keyFont = new Font[30];
@@ -34,15 +38,13 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     boolean selected = false;
 
     public GraphImagePanel(GraphAdapter graphAdapter) throws Exception {
-        //this.graph = graphAdapter;
-
-        //todo testing generator remove exceptions
-
-            this.graph = new GraphAdapter(new Generator(10, true, true).nextBigraph(0));
-
+        this.graph = graphAdapter;
 
         addMouseListener(this);
         addMouseMotionListener(this);
+
+        PopUpTest pop = new PopUpTest(graphAdapter);
+        addMouseListener(new PopClickListener(pop));
 
 
         setBorder(BorderFactory.createEtchedBorder());

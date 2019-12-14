@@ -5,8 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.File;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -17,7 +16,7 @@ public class GraphTest {
 
     @Before
     public void createGraph() throws Exception {
-        graph = new Graph(false, true);
+        graph = new Graph(true, true);
         graph.addNode("5");
         graph.addNode("6");
         graph.addNode("2");
@@ -28,16 +27,20 @@ public class GraphTest {
         graph.addNode("12");
 
 
-        graph.addEdge("5", "6", 1);
-        graph.addEdge("5", "2", 1);
-        graph.addEdge("6", "2", 0);
-        graph.addEdge("5", "11", 1);
-        graph.addEdge("11", "1", 0);
-        graph.addEdge("1", "10", 1);
-        graph.addEdge("2", "9", 1);
-        graph.addEdge("10", "9", 1);
-        graph.addEdge("10", "12", 0);
-        graph.addEdge("11", "12", 1);
+        graph.addEdge("5", "6", -10);
+        graph.addEdge("2", "5", -12);
+        graph.addEdge("6", "2", -6);
+        graph.addEdge("5", "11", 9);
+        graph.addEdge("11", "1", 4);
+        graph.addEdge("1", "10", 18);
+        graph.addEdge("2", "9", 29);
+        graph.addEdge("10", "9", 8);
+        graph.addEdge("10", "12", 4);
+        graph.addEdge("11", "12", 36);
+
+        //for excentricity
+        graph.addEdge("9", "12", 5);
+
 
         System.out.println(graph + "---Before---\n");
     }
@@ -83,6 +86,16 @@ public class GraphTest {
     public void testHasNode() {
 
     }
+
+    @Test
+    public void serialize() {
+        File file = new File("/home/kirill/Documents/test");
+        Graph.serialize(graph, file);
+        graph = Graph.deserialize(file);
+        System.out.println(graph.toString());
+    }
+
+
 
     @Test
     public void testDeleteNode() {
@@ -170,5 +183,15 @@ public class GraphTest {
     @Test
     public void getEccentricity() {
         System.out.println(graph.getEccentricity());
+    }
+
+    @Test
+    public void ford() {
+        System.out.println(graph.ford("5", "9"));
+    }
+
+    @Test
+    public void floyd() {
+        graph.floyd();
     }
 }

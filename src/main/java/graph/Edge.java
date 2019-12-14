@@ -8,6 +8,7 @@ public class Edge {
     private boolean oriented;
     private boolean weighted;
     private double weight;
+    private double flow;
 
     public Edge(Node startNode, Node endNode, double weight, boolean oriented){
         start = startNode;
@@ -15,6 +16,19 @@ public class Edge {
         this.oriented = oriented;
         weighted = true;
         this.weight = weight;
+        flow = 0;
+    }
+
+    public double getFlow() {
+        return flow;
+    }
+
+    public void setFlow(double flow) {
+        this.flow = flow;
+    }
+
+    public double getCf() {
+        return weight - flow;
     }
 
     public Edge(Node startNode, Node endNode, boolean oriented){
