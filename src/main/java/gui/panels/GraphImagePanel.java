@@ -5,8 +5,6 @@ import graph.Node;
 import graph.adapters.EdgeAdapter;
 import graph.adapters.GraphAdapter;
 import graph.adapters.NodeAdapter;
-import gui.popups.PopClickListener;
-import gui.popups.PopUpTest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,11 +18,10 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     ArrayList<EdgeAdapter> visitedEdges = new ArrayList<>();
     ArrayList<NodeAdapter> visitedNodes = new ArrayList<>();
 
-
-
     //Graphics attributes
     private Font[] keyFont = new Font[30];
-    private int nodeSize;;
+    private int nodeSize;
+    ;
     private double aspect;
     private int maxNodeRandom = 500;
     protected float regularWidth = 0.5f;
@@ -37,18 +34,17 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     NodeAdapter selectedNode;
     boolean selected = false;
 
-    public GraphImagePanel(GraphAdapter graphAdapter) {
-        this.graph = graphAdapter;
+    public GraphImagePanel(GraphAdapter graph) {
+        this.graph = graph;
 
         addMouseListener(this);
         addMouseMotionListener(this);
 
-        PopUpTest pop = new PopUpTest(graphAdapter);
-        addMouseListener(new PopClickListener(pop));
-
 
         setBorder(BorderFactory.createEtchedBorder());
         setBackground(new Color(200, 200, 200));
+
+        repaint();
     }
 
     @Override
@@ -63,17 +59,17 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         }
 
         g2.setStroke(new BasicStroke(regularWidth));
-        graph.getNodes().forEach(node -> drawNode(g2, (node), Color.BLUE, aspect));
+        graph.getNodes().forEach(node -> drawNode(g2, (node), aspect));
 
         //visitedNodes.forEach(node -> drawNode(g, node, Color.CYAN));
     }
 
 
-    private void drawNode(Graphics g, NodeAdapter node, Color color, double aspect) {
+    private void drawNode(Graphics g, NodeAdapter node, double aspect) {
         nodeSize = (int) aspect * maxNodeRandom / 8;
         Graphics2D g2 = (Graphics2D) g;
 
-        g2.setColor(color);
+        g2.setColor(node.getColor());
         g.fillOval((int) (node.getX() * aspect - nodeSize / 2), (int) (node.getY() * aspect - nodeSize / 2), nodeSize, nodeSize);
         g2.setColor(Color.BLACK);
         g.drawOval((int) (node.getX() * aspect - nodeSize / 2), (int) (node.getY() * aspect - nodeSize / 2), nodeSize, nodeSize);
@@ -96,7 +92,7 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         NodeAdapter end = edge.getEnd();
 
         g2.drawLine(
-                (int) (start.getX() *aspect),
+                (int) (start.getX() * aspect),
                 (int) (start.getY() * aspect),
                 (int) (end.getX() * aspect),
                 (int) (end.getY() * aspect)
@@ -106,7 +102,7 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
             g.setFont(keyFont[(int) (8 * aspect)]);
             int x = (start.getX() + end.getX()) / 2;
             int y = (start.getY() + end.getY()) / 2;
-            g.drawString("" + edge.getWeight(), (int)(x * aspect), (int) (y * aspect));
+            g.drawString("" + edge.getWeight(), (int) (x * aspect), (int) (y * aspect));
         }
 
         if (edge.isOriented()) {
@@ -210,6 +206,29 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         return node;
     }
 
+
+    private NodeAdapter node1 = null;
+    private NodeAdapter node2 = null;
+    private boolean odd = true;
+
+    public void addEdge(double weight) {
+        if (node1 != null && node2 != null) {
+            graph.addEdge(node1, node2, weight);
+            repaint();
+        }
+    }
+
+    public void addEdge() {
+        if (node1 != null && node2 != null) {
+            graph.addEdge(node1, node2);
+            repaint();
+        }
+    }
+
+    public GraphAdapter getGraph() {
+        return graph;
+    }
+
     //Mouse Listener
 
     @Override
@@ -233,7 +252,8 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     public void mouseDragged(MouseEvent e) {
         if (selected) {
             selectedNode.setX((int) (e.getX() / aspect));
-            selectedNode.setY((int) (e.getY() / aspect));;
+            selectedNode.setY((int) (e.getY() / aspect));
+
             repaint();
         }
     }
@@ -250,19 +270,23 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
 
     @Override
     public void mouseClicked(MouseEvent e) {
-//        if (!isChosed) {
-//            chosenNode = getClickedNodeFromCoords(e.getX(), e.getY());
-//            if (chosenNode != null) {
-//                isChosed = true;
-//            }
-//            else {
-//                isChosed = false;
-//            }
-//        }
-//        else {
-//            isChosed = false;
-//        }
-
+        if (e.getClickCount() == 2) {
+            if (node2 == null) {
+                node2 = selectNodeFromCoords(e.getX(), e.getY());
+                node2.setColor(Color.GREEN);
+            } else {
+                NodeAdapter temp = selectNodeFromCoords(e.getX(), e.getY());
+                if (temp != node2) {
+                    if (node1 != null) {
+                        node1.setColor(Color.BLUE);
+                    }
+                    node1 = node2;
+                    node1.setColor(Color.GREEN);
+                    node2 = temp;
+                    node2.setColor(Color.RED);
+                }
+            }
+        }
     }
 
     @Override

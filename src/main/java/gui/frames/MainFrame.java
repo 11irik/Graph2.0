@@ -13,7 +13,7 @@ public class MainFrame extends JFrame {
     public MainFrame(GraphAdapter graph) {
         super("Grapher");
         setSize(700, 700);
-        setMinimumSize(new Dimension(700, 700));
+        setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
 

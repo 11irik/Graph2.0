@@ -4,6 +4,7 @@ import graph.Graph;
 import graph.adapters.GraphAdapter;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -14,6 +15,8 @@ public class ConstructorPanel extends JPanel {
     JCheckBox orient;
 
     public ConstructorPanel() {
+        this.setLayout(new GridLayout(0, 1));
+
         weight = new JCheckBox("Weighted");
         orient = new JCheckBox("Oriented");
         this.add(weight);

@@ -1,57 +1,36 @@
 package gui.panels;
 
+import graph.Graph;
 import graph.adapters.GraphAdapter;
 import gui.frames.MainFrame;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class CreatorPanel extends JPanel {
-    JRadioButton construct;
-    JRadioButton generate;
-    ConstructorPanel constructorPanel;
-    GeneratorPanel generatorPanel;
+    RadioPanel radioPanel;
     GraphAdapter graph;
     ArrayList<JFrame> fatherFrames;
     Boolean mainFrame;
+    UnitePanel unitePanel;
 
     public CreatorPanel(GraphAdapter graph) {
         fatherFrames = new ArrayList<>();
         this.graph = graph;
         mainFrame = false;
+        this.setLayout(new BorderLayout());
 
-        construct = new JRadioButton("Construct");
-        generate = new JRadioButton("Generate");
-        ButtonGroup buttonGroup = new ButtonGroup();
-        buttonGroup.add(construct);
-        buttonGroup.add(generate);
-        this.add(construct);
-        this.add(generate);
+        unitePanel = new UnitePanel();
+        radioPanel = new RadioPanel(unitePanel);
+//        GraphImagePanel graphImagePanel = new GraphImagePanel(graph);
+//        this.add(graphImagePanel, BorderLayout.CENTER);
 
-        constructorPanel = new ConstructorPanel();
-        generatorPanel = new GeneratorPanel();
-        this.add(constructorPanel);
-        this.add(generatorPanel);
-        constructorPanel.setVisible(false);
-        generatorPanel.setVisible(false);
+        this.add(radioPanel, BorderLayout.WEST);
 
-        construct.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                constructorPanel.setVisible(true);
-                generatorPanel.setVisible(false);
-            }
-        });
-
-        generate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                constructorPanel.setVisible(false);
-                generatorPanel.setVisible(true);
-            }
-        });
+        this.add(unitePanel, BorderLayout.EAST);
 
         JButton b = new JButton("Create");
         b.addActionListener(new ActionListener() {
@@ -64,7 +43,7 @@ public class CreatorPanel extends JPanel {
             }
         });
 
-        this.add(b);
+        this.add(b, BorderLayout.SOUTH);
     }
 
     public void addFatherFrame(JFrame frame) {
@@ -82,11 +61,11 @@ public class CreatorPanel extends JPanel {
     }
 
     public void createGraph() {
-        if (construct.isSelected()) {
-            graph.setGraph(constructorPanel.createGraph());
+        if (radioPanel.getConstructSelected()) {
+            graph.setGraph(unitePanel.getConstructorPanel().createGraph());
             disposeFatherFrames();
         } else {
-            graph.setGraph(generatorPanel.createGraph());
+            graph.setGraph(unitePanel.getGeneratorPanel().createGraph());
             disposeFatherFrames();
         }
     }

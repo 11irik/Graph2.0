@@ -46,6 +46,14 @@ public class EdgeAdapter {
         this.oriented = oriented;
     }
 
+    public EdgeAdapter(NodeAdapter start, NodeAdapter end, double weight, boolean oriented) {
+        this.start = start;
+        this.end = end;
+        this.weighted = true;
+        this.weight = weight;
+        this.oriented = oriented;
+    }
+
     public boolean isOriented() {
         return oriented;
     }

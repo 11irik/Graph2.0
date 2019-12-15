@@ -15,7 +15,8 @@ public class OpenPanel extends JPanel {
             File f = fileChooser.getSelectedFile();
             graph.setGraph(Graph.deserialize(f));
             frame.dispose();
-            new MainFrame(graph);
+            MainFrame mainFrame = new MainFrame(graph);
+            mainFrame.repaint();
         }
     }
 

@@ -7,7 +7,9 @@ import javax.swing.*;
 
 public class CreateGraphFrame extends JFrame {
     public CreateGraphFrame(JFrame frame, GraphAdapter graph) {
-        setSize(300, 200);
+        super("Creator");
+        setSize(300, 300);
+        setResizable(false);
         CreatorPanel creatorPanel = new CreatorPanel(graph);
         creatorPanel.addFatherFrame(frame);
         creatorPanel.addFatherFrame(this);
@@ -15,6 +17,7 @@ public class CreateGraphFrame extends JFrame {
     }
 
     public CreateGraphFrame(GraphAdapter graph) {
+        super("Creator");
         setSize(300, 300);
         setResizable(false);
         CreatorPanel creatorPanel = new CreatorPanel(graph);

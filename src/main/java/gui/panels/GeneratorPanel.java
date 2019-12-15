@@ -4,6 +4,7 @@ package gui.panels;
 import graph.Graph;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class GeneratorPanel extends JPanel{
     JRadioButton buttonTree;
@@ -12,6 +13,8 @@ public class GeneratorPanel extends JPanel{
 
 
     public GeneratorPanel() {
+        this.setLayout(new GridLayout(0, 1));
+
         buttonTree = new JRadioButton("Tree");
         buttonBigraph = new JRadioButton("Bigraph");
         buttonFullGraph = new JRadioButton("Full graph");
@@ -23,11 +26,11 @@ public class GeneratorPanel extends JPanel{
         this.add(buttonBigraph);
         this.add(buttonFullGraph);
 
-        JTextField nodeCount = new JTextField(2);
+        JTextField nodeCount = new JTextField("Nodes",2);
+
         this.add(nodeCount);
 
-
-        JTextField edgeCount = new JTextField(3);
+        JTextField edgeCount = new JTextField("Edges", 3);
         this.add(edgeCount);
     }
 

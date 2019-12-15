@@ -1,7 +1,9 @@
 package graph.adapters;
 
+import graph.Edge;
 import graph.Graph;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Random;
@@ -64,6 +66,28 @@ public class GraphAdapter {
         }
     }
 
+    public void addEdge(NodeAdapter a, NodeAdapter b, double weight) {
+        try {
+            graph.addEdge(a.getKey(), b.getKey(), weight);
+            edges.add(new EdgeAdapter(a, b, weight, graph.getOriented()));
+            a.setColor(Color.BLUE);
+            b.setColor(Color.BLUE);
+            a = null;
+            b = null;
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void addEdge(NodeAdapter a, NodeAdapter b) {
+        graph.addEdge(a.getKey(), b.getKey());
+        edges.add(new EdgeAdapter(a, b, graph.getWeighted(), graph.getOriented()));
+        a.setColor(Color.BLUE);
+        b.setColor(Color.BLUE);
+        a = null;
+        b = null;
+    }
+
     public boolean addNode(String key, int x, int y) {
         if (graph.addNode(key)) {
             nodes.add(new NodeAdapter(graph.getNode(key), x, y));
@@ -89,7 +113,7 @@ public class GraphAdapter {
         this.graph = graph;
     }
 
-    public void refresh() {
+    public void rebuild() {
         nodes = new ArrayList<>();
         edges = new ArrayList<>();
 
