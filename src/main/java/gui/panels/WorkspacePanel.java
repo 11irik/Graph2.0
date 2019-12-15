@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class WorkspacePanel extends JPanel {
-    public WorkspacePanel(GraphAdapter graph) throws Exception {
+    public WorkspacePanel(GraphAdapter graph) {
         GridBagLayout gridBagLayout = new GridBagLayout();
         this.setLayout(gridBagLayout);
         GridBagConstraints c = new GridBagConstraints();

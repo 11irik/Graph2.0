@@ -1,6 +1,8 @@
 package gui.panels;
 
 
+import graph.Graph;
+
 import javax.swing.*;
 
 public class GeneratorPanel extends JPanel{
@@ -29,7 +31,8 @@ public class GeneratorPanel extends JPanel{
         this.add(edgeCount);
     }
 
-    public void createGraph() {
-
+    public Graph createGraph() {
+        Graph graph = new Graph();
+        return graph;
     }
 }

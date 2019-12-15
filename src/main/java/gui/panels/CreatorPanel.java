@@ -1,28 +1,27 @@
 package gui.panels;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-import com.sun.deploy.panel.GeneralPanel;
-import graph.Graph;
 import graph.adapters.GraphAdapter;
+import gui.frames.MainFrame;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.util.ArrayList;
 
-public class NewGraphPanel extends JPanel {
+public class CreatorPanel extends JPanel {
     JRadioButton construct;
     JRadioButton generate;
     ConstructorPanel constructorPanel;
     GeneratorPanel generatorPanel;
-    GraphAdapter graphAdapter;
+    GraphAdapter graph;
+    ArrayList<JFrame> fatherFrames;
+    Boolean mainFrame;
 
-    public NewGraphPanel(GraphAdapter graphAdapter) {
+    public CreatorPanel(GraphAdapter graph) {
+        fatherFrames = new ArrayList<>();
+        this.graph = graph;
+        mainFrame = false;
+
         construct = new JRadioButton("Construct");
         generate = new JRadioButton("Generate");
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -30,8 +29,6 @@ public class NewGraphPanel extends JPanel {
         buttonGroup.add(generate);
         this.add(construct);
         this.add(generate);
-
-        this.graphAdapter = graphAdapter;
 
         constructorPanel = new ConstructorPanel();
         generatorPanel = new GeneratorPanel();
@@ -61,14 +58,36 @@ public class NewGraphPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 createGraph();
+                if (mainFrame == false) {
+                    new MainFrame(graph);
+                }
             }
         });
+
         this.add(b);
+    }
+
+    public void addFatherFrame(JFrame frame) {
+        fatherFrames.add(frame);
+    }
+
+    public void setMainFrame(Boolean hasMain) {
+        this.mainFrame = hasMain;
+    }
+
+    private void disposeFatherFrames() {
+        for (JFrame frame : fatherFrames) {
+            frame.dispose();
+        }
     }
 
     public void createGraph() {
         if (construct.isSelected()) {
-            graphAdapter.setGraph(constructorPanel.createGraph());
+            graph.setGraph(constructorPanel.createGraph());
+            disposeFatherFrames();
+        } else {
+            graph.setGraph(generatorPanel.createGraph());
+            disposeFatherFrames();
         }
     }
 }

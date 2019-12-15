@@ -1,11 +1,8 @@
 package gui.popups;
 
 import graph.adapters.GraphAdapter;
-import gui.frames.NodeCreatorFrame;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class PopUpTest extends JPopupMenu {
     public PopUpTest(GraphAdapter graphAdapter) {

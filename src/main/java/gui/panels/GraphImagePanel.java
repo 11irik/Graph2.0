@@ -37,7 +37,7 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     NodeAdapter selectedNode;
     boolean selected = false;
 
-    public GraphImagePanel(GraphAdapter graphAdapter) throws Exception {
+    public GraphImagePanel(GraphAdapter graphAdapter) {
         this.graph = graphAdapter;
 
         addMouseListener(this);
@@ -164,9 +164,10 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         repaint();
     }
 
-    public void update() throws InterruptedException {
+    public void update() {
         repaint();
-        Thread.sleep(1000);
+
+//        Thread.sleep(1000);
     }
 
     class GraphWorker extends SwingWorker<Void, Void> {
@@ -179,7 +180,7 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Void doInBackground() {
             Queue<Node> nodes = graph.getGraph().getSpanningComponent(graph.getNode("6").getNode());
             NodeAdapter st = graph.getNode("6");
             drawAlg = true;

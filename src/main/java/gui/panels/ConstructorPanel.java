@@ -30,6 +30,6 @@ public class ConstructorPanel extends JPanel {
             oriented = true;
         }
 
-        return  new Graph(oriented, weighted);
+        return new Graph(oriented, weighted);
     }
 }

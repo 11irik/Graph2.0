@@ -89,7 +89,7 @@ public class GraphTest {
 
     @Test
     public void serialize() {
-        File file = new File("/home/kirill/Documents/test");
+        File file = new File("./TEST.dat");
         Graph.serialize(graph, file);
         graph = Graph.deserialize(file);
         System.out.println(graph.toString());
