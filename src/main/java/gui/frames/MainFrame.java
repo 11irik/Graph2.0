@@ -19,7 +19,7 @@ public class MainFrame extends JFrame {
 
         this.graph = graph;
 
-        JMenuBar menuBar = new GraphMenuBar(graph);
+        JMenuBar menuBar = new GraphMenuBar(this, graph);
         setJMenuBar(menuBar);
 
         add(new WorkspacePanel(graph));

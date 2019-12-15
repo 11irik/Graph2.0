@@ -12,6 +12,7 @@ public class GraphAdapter {
     Graph graph;
     ArrayList<NodeAdapter> nodes;
     ArrayList<EdgeAdapter> edges;
+    Color defaultColor = Color.PINK;
 
     Random random = new Random();
     int nodeCoordMax = 500;
@@ -70,8 +71,8 @@ public class GraphAdapter {
         try {
             graph.addEdge(a.getKey(), b.getKey(), weight);
             edges.add(new EdgeAdapter(a, b, weight, graph.getOriented()));
-            a.setColor(Color.BLUE);
-            b.setColor(Color.BLUE);
+            a.setColor(defaultColor);
+            b.setColor(defaultColor);
             a = null;
             b = null;
         } catch (Exception e) {
@@ -82,8 +83,8 @@ public class GraphAdapter {
     public void addEdge(NodeAdapter a, NodeAdapter b) {
         graph.addEdge(a.getKey(), b.getKey());
         edges.add(new EdgeAdapter(a, b, graph.getWeighted(), graph.getOriented()));
-        a.setColor(Color.BLUE);
-        b.setColor(Color.BLUE);
+        a.setColor(defaultColor);
+        b.setColor(defaultColor);
         a = null;
         b = null;
     }

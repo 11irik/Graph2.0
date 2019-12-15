@@ -9,11 +9,11 @@ import javax.swing.*;
 
 public class GraphMenuBar extends JMenuBar {
 
-    public GraphMenuBar(GraphAdapter graph) {
+    public GraphMenuBar(JFrame frame, GraphAdapter graph) {
         JMenu file = new JMenu("File");
 
-        JMenuItem fileNew = new FileNewItem(graph);
-        JMenuItem fileOpen = new FileOpenMenuItem(graph);
+        JMenuItem fileNew = new FileNewItem(frame, graph);
+        JMenuItem fileOpen = new FileOpenMenuItem(frame, graph);
         JMenuItem fileSave = new FileSaveMenuItem(graph);
 
         file.add(fileNew);

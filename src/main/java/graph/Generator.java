@@ -4,18 +4,32 @@ import java.util.Random;
 
 public class Generator {
     int nodeCount;
+    int edgeCount;
     Random random;
     boolean oriented;
     boolean weighted;
 
-    public Generator(int nodeCount, boolean oriented, boolean weighted) {
+    public Generator(int nodeCount, int edgeCount, boolean oriented, boolean weighted) {
         this.nodeCount = nodeCount;
         random = new Random();
         this.oriented = oriented;
         this.weighted = weighted;
+
+        int maxEdgeCount = nodeCount * (nodeCount - 1) / 2;
+        if (weighted) {
+            maxEdgeCount *= 2;
+        }
+        if (edgeCount < nodeCount - 1) {
+            this.edgeCount = nodeCount - 1;
+        } else if(edgeCount > maxEdgeCount) {
+            this.edgeCount = maxEdgeCount;
+        } else {
+            this.edgeCount = edgeCount;
+        }
+
     }
 
-    public Graph nextFull() throws Exception {
+    public Graph nextFull() {
         Graph graph = new Graph(oriented, weighted);
         for (int i = 0; i < nodeCount; ++i) {
             graph.addNode(String.valueOf(i));
@@ -31,7 +45,11 @@ public class Generator {
 
             for (; j < nodeCount; ++j) {
                 if (weighted) {
-                    graph.addEdge(String.valueOf(i), String.valueOf(j), random.nextInt(100));
+                    try {
+                        graph.addEdge(String.valueOf(i), String.valueOf(j), random.nextInt(100));
+                    } catch (Exception e) {
+
+                    }
                 } else {
                     graph.addEdge(String.valueOf(i), String.valueOf(j));
                 }
@@ -41,9 +59,35 @@ public class Generator {
         return graph;
     }
 
-    //todo tree generator
-    private Graph getMinimalBigraph(Graph graph, int fstNodeCount, int sndNodeCount) {
+    public Graph nextTree() {
+        Graph graph = new Graph(oriented, weighted);
+        for (int i = 0; i < nodeCount; ++i) {
+            graph.addNode(String.valueOf(i));
+        }
 
+        int count = 0;
+        while (count < nodeCount - 1) {
+            int st = random.nextInt(nodeCount);
+            int nd = random.nextInt(nodeCount);
+            if (st != nd) {
+                Node s = graph.getNode(String.valueOf(st));
+                Node e = graph.getNode(String.valueOf(nd));
+                if (weighted) {
+                    try {
+                        graph.addEdge(String.valueOf(st), String.valueOf(nd), random.nextDouble());
+                    } catch (Exception ex) {
+
+                    }
+                } else {
+                    graph.addEdge(String.valueOf(st), String.valueOf(nd));
+                }
+                if (graph.hasCycle()) {
+                    graph.deleteEdge(String.valueOf(st), String.valueOf(nd));
+                } else {
+                    count++;
+                }
+            }
+        }
 
         return graph;
     }
@@ -60,7 +104,7 @@ public class Generator {
         if (edgesCount == 0) {
             edgesCount = fstNodeCount * sndNodeCount;
             if (oriented) {
-               // edgesCount *= 2;
+                // edgesCount *= 2;
             }
         }
 
@@ -73,9 +117,9 @@ public class Generator {
             int edgeEnd = random.nextInt(sndNodeCount) + fstNodeCount;
             System.out.println(edgeStart + " " + edgeEnd);
             if (weighted) {
-                 if (graph.addEdge(String.valueOf(edgeStart), String.valueOf(edgeEnd), random.nextInt(100))) {
-                     count++;
-                 }
+                if (graph.addEdge(String.valueOf(edgeStart), String.valueOf(edgeEnd), random.nextInt(100))) {
+                    count++;
+                }
             } else {
                 if (graph.addEdge(String.valueOf(edgeStart), String.valueOf(edgeEnd))) {
                     count++;
@@ -94,6 +138,62 @@ public class Generator {
             } else {
                 if (graph.addEdge(String.valueOf(edgeStart), String.valueOf(edgeEnd))) {
                     count++;
+                }
+            }
+        }
+
+        return graph;
+    }
+
+    public Graph nextGamil() {
+        Graph graph = new Graph(oriented, weighted);
+        for (int i = 0; i < nodeCount; ++i) {
+            graph.addNode(String.valueOf(i));
+        }
+
+        if (edgeCount < nodeCount) {
+            edgeCount = nodeCount;
+        }
+
+        for (int i = 0; i < nodeCount-1; ++i) {
+            if (weighted) {
+                try {
+                    graph.addEdge(String.valueOf(i), String.valueOf(i+1), random.nextDouble());
+                } catch (Exception ex) {
+
+                }
+            } else {
+                graph.addEdge(String.valueOf(i), String.valueOf(i+1));
+            }
+        }
+
+        if (weighted) {
+            try {
+                graph.addEdge(String.valueOf(0), String.valueOf(nodeCount-1), random.nextDouble());
+            } catch (Exception ex) {
+
+            }
+        } else {
+            graph.addEdge(String.valueOf(0), String.valueOf(nodeCount-1));
+        }
+
+        int count = nodeCount;
+        while (count < edgeCount) {
+            int st = random.nextInt(nodeCount);
+            int nd = random.nextInt(nodeCount);
+            if (st != nd) {
+                if (weighted) {
+                    try {
+                        if (graph.addEdge(String.valueOf(st), String.valueOf(nd), random.nextDouble())) {
+                            count++;
+                        }
+                    } catch (Exception ex) {
+
+                    }
+                } else {
+                    if (graph.addEdge(String.valueOf(st), String.valueOf(nd))) {
+                        count++;
+                    }
                 }
             }
         }

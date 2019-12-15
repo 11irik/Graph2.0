@@ -167,6 +167,7 @@ public class Graph {
     private void setNodesUsedFalse() {
         for (Node n : adjacencyList.keySet()) {
             n.setUsed(false);
+            n.setState(0);
         }
     }
 
@@ -466,6 +467,29 @@ public class Graph {
         //return spanningTree;
         return nodes;
     }
+
+    //help
+
+
+    private void dfs(Node node, Boolean cycle) {
+        node.setUsed(true);
+        for (Node adj : adjacencyList.get(node).keySet()) {
+            if (!adj.getUsed()) {
+                dfs(adj, cycle);
+            } else {
+                cycle = true;
+                break;
+            }
+        }
+    }
+
+    public boolean hasCycle() {
+        Boolean has = false;
+        setNodesUsedFalse();
+        dfs((Node) adjacencyList.keySet().toArray()[0], has);
+        return has;
+    }
+    //help
 
     //task II(23)
     private void dfsCycle(Node node, Stack<Node> nodes, int timer) {

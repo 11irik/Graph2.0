@@ -9,6 +9,7 @@ import graph.adapters.NodeAdapter;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -74,7 +75,7 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         g2.setColor(Color.BLACK);
         g.drawOval((int) (node.getX() * aspect - nodeSize / 2), (int) (node.getY() * aspect - nodeSize / 2), nodeSize, nodeSize);
 
-        g.setFont(keyFont[(int) (8 * aspect)]);
+        g.setFont(keyFont[(int) (8 * aspect * 2)]);
         FontMetrics fontMetrics = g.getFontMetrics();
         int width = fontMetrics.stringWidth("" + node.getKey());
         //todo magic with string
@@ -100,9 +101,16 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
 
         if (edge.isWeighted()) {
             g.setFont(keyFont[(int) (8 * aspect)]);
-            int x = (start.getX() + end.getX()) / 2;
-            int y = (start.getY() + end.getY()) / 2;
-            g.drawString("" + edge.getWeight(), (int) (x * aspect), (int) (y * aspect));
+
+            String str = String.valueOf(edge.getWeight());
+            FontMetrics fm = g.getFontMetrics();
+            Rectangle2D rect = fm.getStringBounds(str, g);
+            int x = (int) ((start.getX() + end.getX()) / 2);
+            int y = (int) ((start.getY() + end.getY()) / 2);
+            g.setColor(Color.WHITE);
+            g.fillRect((int) (x * aspect), (int) (y * aspect) - fm.getAscent(), (int) rect.getWidth(), (int) rect.getHeight());
+            g.setColor(Color.BLACK);
+            g.drawString(str, (int) (x * aspect), (int) (y * aspect));
         }
 
         if (edge.isOriented()) {
@@ -215,6 +223,8 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         if (node1 != null && node2 != null) {
             graph.addEdge(node1, node2, weight);
             repaint();
+            node1 = null;
+            node2 = null;
         }
     }
 
@@ -222,6 +232,8 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         if (node1 != null && node2 != null) {
             graph.addEdge(node1, node2);
             repaint();
+            node1 = null;
+            node2 = null;
         }
     }
 
@@ -278,7 +290,7 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
                 NodeAdapter temp = selectNodeFromCoords(e.getX(), e.getY());
                 if (temp != node2) {
                     if (node1 != null) {
-                        node1.setColor(Color.BLUE);
+                        node1.setDefaultColor();
                     }
                     node1 = node2;
                     node1.setColor(Color.GREEN);

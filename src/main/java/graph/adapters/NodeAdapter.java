@@ -8,19 +8,22 @@ public class NodeAdapter {
     private Node node;
     private int x;
     private int y;
-    private Color color;
+    private Color color = Color.PINK;
 
     public NodeAdapter(Node node, int x, int y) {
         this.node = node;
         this.x = x;
         this.y = y;
-        this.color = Color.BLUE;
     }
 
     public NodeAdapter(NodeAdapter node) {
         this.node = node.node;
         this.x = node.x;
         this.y = node.y;
+    }
+
+    public void setDefaultColor() {
+        color = Color.PINK;
     }
 
     public Node getNode() {
