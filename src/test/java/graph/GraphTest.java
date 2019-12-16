@@ -22,14 +22,17 @@ public class GraphTest {
         graph.addNode("3");
         graph.addNode("4");
         graph.addNode("5");
+        graph.addNode("6");
 
 
-        graph.addEdge("1", "2", -5);
-        graph.addEdge("2", "3", 3);
-        graph.addEdge("3", "4", 4);
-        graph.addEdge("5", "4", 5);
-        graph.addEdge("2", "5", 1);
-        graph.addEdge("5", "1", 2);
+        graph.addEdge("1", "2", -2);
+        graph.addEdge("2", "6", 1);
+        graph.addEdge("6", "3", 1);
+        graph.addEdge("4", "3", 4);
+        graph.addEdge("4", "2", 3);
+        graph.addEdge("5", "4", 3);
+        graph.addEdge("5", "1", 1);
+
 
         System.out.println(graph + "---Before---\n");
     }
@@ -145,11 +148,16 @@ public class GraphTest {
 
     @Test
     public void ford() {
-        System.out.println(graph.ford("5", "9"));
+        System.out.println(graph.ford("5", "3"));
     }
 
     @Test
     public void floyd() {
         graph.floydAlgorithm();
+    }
+
+    @Test
+    public void maxFlow() {
+        System.out.println(graph.maxFlow("1", "5"));
     }
 }

@@ -10,7 +10,7 @@ import java.io.IOException;
 public class PicPanel extends JPanel {
 
     public PicPanel() {
-        ImageIcon imageIcon = new ImageIcon(".\\src\\resources\\logo.png");
+        ImageIcon imageIcon = new ImageIcon("/home/kirill/Documents/workspace/java/Graph2.0/src/main/resources/logo.png");
         JLabel label = new JLabel(imageIcon);
         add(label);
     }

@@ -602,14 +602,13 @@ public class Graph {
             distances.put(adj, inf);
         }
         distances.put(begin, 0.0);
-
+        ArrayList<ArrayList<Node>> ways = new ArrayList<>();
 
         for (int i = 1; i < adjacencyList.keySet().size() - 1; ++i) {
             for (Node u : adjacencyList.keySet()) {
                 for (Node v : adjacencyList.get(u).keySet()) {
                     double distance = distances.get(u) + adjacencyList.get(u).get(v);
                     if (v == end) {
-                        System.out.println(distance);
                     }
                     if (distances.get(v) > distance) {
                         distances.put(v, distance);
@@ -668,24 +667,91 @@ public class Graph {
 
 
     //Task V
-    //    Node t;
-//    double maxFlow;
-//
-//    void dfs(Node v, int curflow) {
-//        if (t == v) {
-//
-//        }
-//        v.setUsed(true);
-//
-//        for
-//
-//    }
-//
-//    public void findFlow() {
-//        convertIntoEdges();
-//
-//        int maxflow = 0;
-//    }
+    private int s, t;
+    private int[] d;
+    private int[] ptr;
+    private int[] q;
+    private Integer[][] c;
+    private Integer[][] f;
+    private int n;
+    private Integer INF = Integer.MAX_VALUE - 1;
+
+    private boolean bfs() {
+        int qh = 0, qt = 0;
+        q[qt++] = s;
+        for (int i = 0; i < n; i++) {
+            d[i] = -1;
+        }
+        d[s] = 0;
+        while (qh < qt) {
+            int v = q[qh++];
+            for (int to = 0; to < n; ++to) {
+                if (d[to] == -1 && f[v][to] < c[v][to]) {
+                    q[qt++] = to;
+                    d[to] = d[v] + 1;
+                }
+            }
+        }
+        return d[t] != -1;
+    }
+
+    private int dfs(int v, int flow) {
+        if (flow == 0) return 0;
+        if (v == t) return flow;
+        for (int to = ptr[v]; to < n; ++to) {
+            if (d[to] != d[v] + 1) {
+                continue;
+            }
+            int pushed = dfs(to, Math.min(flow, c[v][to] - f[v][to]));
+            if (pushed != 0) {
+                f[v][to] += pushed;
+                f[to][v] -= pushed;
+                return pushed;
+            }
+        }
+        return 0;
+    }
+
+    private int dinic() {
+        int flow = 0;
+        for (; ; ) {
+            if (!bfs()) break;
+            else {
+                for (int i = 0; i < n; i++) ptr[i] = 0;
+                int pushed = dfs(s, INF);
+                while (pushed != 0) {
+                    flow += pushed;
+                    pushed = dfs(s, INF);
+                }
+            }
+        }
+        return flow;
+    }
+
+    public int maxFlow(String from, String to) {
+        n = adjacencyList.keySet().size() + 1;
+        d = new int[n];
+        ptr = new int[n];
+        q = new int[n];
+        s = Integer.parseInt(from);
+        t = Integer.parseInt(to);
+        c = new Integer[n][n];
+        f = new Integer[n][n];
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                c[i][j] = 0;
+                f[i][j] = 0;
+            }
+        }
+        for (Node node : adjacencyList.keySet()) {
+            for (Node adjacency : adjacencyList.get(node).keySet()) {
+                double k = adjacencyList.get(node).get(adjacency);
+                c[Integer.parseInt(node.getKey())][Integer.parseInt(adjacency.getKey())] =
+                        (int)(k);
+            }
+        }
+        return dinic();
+    }
 
 
     //help
