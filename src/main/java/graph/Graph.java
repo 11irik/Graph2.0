@@ -593,31 +593,81 @@ public class Graph {
 
 
     //Task IV(b)
-    public HashMap<Node, Double> ford(String nodeStart, String nodeEnd) {
+
+
+    ArrayList<Node> minPath = new ArrayList<>();
+    double minDistance;
+    public void ford(String nodeStart, String nodeEnd) throws Exception {
         Node begin = this.getNode(nodeStart);
         Node end = this.getNode(nodeEnd);
         HashMap<Node, Double> distances = new HashMap<>();
+        HashMap<Node, Node> way = new HashMap<>();
         double inf = Double.POSITIVE_INFINITY;
         for (Node adj : adjacencyList.keySet()) {
             distances.put(adj, inf);
+            way.put(adj, null);
         }
         distances.put(begin, 0.0);
-        ArrayList<ArrayList<Node>> ways = new ArrayList<>();
-
-        for (int i = 1; i < adjacencyList.keySet().size() - 1; ++i) {
-            for (Node u : adjacencyList.keySet()) {
-                for (Node v : adjacencyList.get(u).keySet()) {
-                    double distance = distances.get(u) + adjacencyList.get(u).get(v);
-                    if (v == end) {
-                    }
-                    if (distances.get(v) > distance) {
-                        distances.put(v, distance);
-                    }
-                }
-            }
+        for (;;) {
+             boolean any = false;
+             convertIntoEdges();
+             for (Edge edge : edges) {
+                 if (distances.get(edge.getStart()) < inf) {
+                     if (distances.get(edge.getEnd()) > distances.get(edge.getStart()) + edge.getWeight()) {
+                         distances.put(edge.getEnd(), distances.get(edge.getStart()) + edge.getWeight());
+                         way.put(edge.getEnd(), edge.getStart());
+                         any = true;
+                     }
+                 }
+             }
+             if (!any) {
+                 break;
+             }
         }
 
-        return distances;
+        minDistance = distances.get(end);
+        minPath = new ArrayList<>();
+        if (distances.get(end) == inf)
+            minPath.add(null);
+        else {
+            Node temp = end;
+            while (temp != begin) {
+                minPath.add(temp);
+                temp = way.get(temp);
+            }
+            minPath.add(temp);
+            Collections.reverse(minPath);
+        }
+
+        System.out.println(minDistance);
+        System.out.println(minPath);
+    }
+
+    public void yens(String a, String b, int k) throws Exception {
+        Graph temp = new Graph(this, true);
+
+        for (int i = 0; i < k-1; ++i) {
+            temp.ford(a, b);
+            ArrayList<Node> minkWay = null;
+            double minkDist = Double.POSITIVE_INFINITY;
+            Graph minTemp = new Graph(temp, true);
+
+            for (int j = 0; j < minPath.size() - 1; ++j) {
+                Graph temp1 = new Graph(temp, true);
+                temp1.deleteEdge(minPath.get(i).toString(), minPath.get(i+1).toString());
+                System.out.println(temp1);
+                temp1.ford(a, b);
+                if (minkDist < minDistance) {
+                    minkDist = minDistance;
+                    minkWay = minPath;
+                    minTemp = temp1;
+                }
+            }
+
+            temp = minTemp;
+            System.out.println("----\n" + minkDist);
+            System.out.println(minkWay);
+        }
     }
 
 

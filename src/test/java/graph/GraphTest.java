@@ -147,8 +147,8 @@ public class GraphTest {
     }
 
     @Test
-    public void ford() {
-        System.out.println(graph.ford("5", "3"));
+    public void ford() throws Exception {
+       graph.yens("5", "3", 2);
     }
 
     @Test
