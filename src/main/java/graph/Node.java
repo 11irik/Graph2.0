@@ -8,7 +8,6 @@ public class Node {
     private String key;
     private boolean used;
     private int timeIn;
-    private int state;
 
     public Node() {
 
@@ -38,18 +37,6 @@ public class Node {
 
     public int getTimeIn() {
         return timeIn;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public void incState() {
-        state++;
     }
 
     public void setUsed(boolean used) {

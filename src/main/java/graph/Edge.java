@@ -19,18 +19,6 @@ public class Edge {
         flow = 0;
     }
 
-    public double getFlow() {
-        return flow;
-    }
-
-    public void setFlow(double flow) {
-        this.flow = flow;
-    }
-
-    public double getCf() {
-        return weight - flow;
-    }
-
     public Edge(Node startNode, Node endNode, boolean oriented){
         start = startNode;
         end = endNode;
@@ -40,11 +28,11 @@ public class Edge {
     }
 
     public Node getStart() {
-        return new Node(start);
+        return start;
     }
 
     public Node getEnd() {
-        return new Node(end);
+        return end;
     }
 
     public double getWeight() throws Exception {
@@ -62,6 +50,18 @@ public class Edge {
 
     public boolean isOriented() {
         return oriented;
+    }
+
+    public double getFlow() {
+        return flow;
+    }
+
+    public void setFlow(double flow) {
+        this.flow = flow;
+    }
+
+    public double getCurrentFlow() {
+        return weight - flow;
     }
 
     public void setStart(Node node) {
@@ -82,7 +82,6 @@ public class Edge {
     }
 
     //todo check this moment
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

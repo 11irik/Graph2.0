@@ -31,10 +31,10 @@ public class GeneratorPanel extends JPanel{
         this.add(buttonFullGraph);
         this.add(buttonHamiltonian);
 
-        nodeCount = new JTextField("Nodes",2);
+        nodeCount = new JTextField("Nodes");
         this.add(nodeCount);
 
-        edgeCount = new JTextField("0", 3);
+        edgeCount = new JTextField("0");
         edgeCount.setVisible(false);
         this.add(edgeCount);
 
@@ -75,7 +75,7 @@ public class GeneratorPanel extends JPanel{
             return generator.nextTree();
         }
         if (buttonHamiltonian.isSelected()) {
-            return generator.nextGamil();
+            return generator.nextHamiltonian();
         }
         return null;
     }

@@ -17,54 +17,19 @@ public class GraphTest {
     @Before
     public void createGraph() throws Exception {
         graph = new Graph(true, true);
-        graph.addNode("5");
-        graph.addNode("6");
-        graph.addNode("2");
         graph.addNode("1");
-        graph.addNode("10");
-        graph.addNode("11");
-        graph.addNode("9");
-        graph.addNode("12");
-
-
-        graph.addEdge("5", "6", -10);
-        graph.addEdge("2", "5", -12);
-        graph.addEdge("6", "2", -6);
-        graph.addEdge("5", "11", 9);
-        graph.addEdge("11", "1", 4);
-        graph.addEdge("1", "10", 18);
-        graph.addEdge("2", "9", 29);
-        graph.addEdge("10", "9", 8);
-        graph.addEdge("10", "12", 4);
-        graph.addEdge("11", "12", 36);
-
-        //for excentricity
-        graph.addEdge("9", "12", 5);
-
-
-        System.out.println(graph + "---Before---\n");
-    }
-
-    //@Before
-    public void createOrGraph() throws Exception {
-        graph = new Graph(true, true);
-        graph.addNode("5");
-        graph.addNode("6");
         graph.addNode("2");
-        graph.addNode("1");
-        graph.addNode("10");
-        graph.addNode("11");
-        graph.addNode("7");
-        graph.addEdge("6", "7", 1);
-        graph.addEdge("6", "2", 1);
-        graph.addEdge("5", "6", 1);
-        graph.addEdge("2", "5", 0);
-        graph.addEdge("11", "10", 0);
-        graph.addEdge("5", "11", 1);
-        graph.addEdge("1", "10", 1);
-        graph.addEdge("5", "1", 1);
-        graph.addEdge("2", "1", 1);
+        graph.addNode("3");
+        graph.addNode("4");
+        graph.addNode("5");
 
+
+        graph.addEdge("1", "2", -5);
+        graph.addEdge("2", "3", 3);
+        graph.addEdge("3", "4", 4);
+        graph.addEdge("5", "4", 5);
+        graph.addEdge("2", "5", 1);
+        graph.addEdge("5", "1", 2);
 
         System.out.println(graph + "---Before---\n");
     }
@@ -83,19 +48,12 @@ public class GraphTest {
     }
 
     @Test
-    public void testHasNode() {
-
-    }
-
-    @Test
     public void serialize() {
         File file = new File("./TEST.dat");
         Graph.serialize(graph, file);
         graph = Graph.deserialize(file);
         System.out.println(graph.toString());
     }
-
-
 
     @Test
     public void testDeleteNode() {
@@ -126,7 +84,7 @@ public class GraphTest {
     //Task Ia(6)
     @Test
     public void getZeros() {
-        System.out.println(graph.getZeros());
+        System.out.println(graph.getIsolated());
     }
 
     @Test
@@ -146,13 +104,13 @@ public class GraphTest {
     @Test
     public void doesIssueExist() {
         System.out.println(graph.doesIssueExist("1", "5"));
-        System.out.println(graph.doesIssueExist("5", "2"));
+        System.out.println(graph.doesIssueExist("5", "3"));
     }
 
     //Task Ib(8)
     @Test
     public void deleteOddEdges() {
-       // System.out.println(graph.deleteOddEdges());
+        System.out.println(graph.deleteOddEdges());
     }
 
     @Test
@@ -162,7 +120,7 @@ public class GraphTest {
 
     @Test
     public void getFundamentalSetOfCycles() {
-        graph.getFundamentalSetOfCycles("9");
+        graph.getFundamentalSetOfCycles("1");
     }
 
     @Test
@@ -174,15 +132,15 @@ public class GraphTest {
     }
 
     @Test
-    public void boruvka() {
+    public void boruvka() throws Exception {
         if (graph.getWeighted()) {
-//            System.out.println(graph.boruvka());
+            System.out.println(graph.boruvkasAlgorithm());
         }
     }
 
     @Test
-    public void getEccentricity() {
-        System.out.println(graph.getEccentricity());
+    public void getRadius() {
+        System.out.println(graph.getRadius());
     }
 
     @Test
@@ -192,6 +150,6 @@ public class GraphTest {
 
     @Test
     public void floyd() {
-        graph.floyd();
+        graph.floydAlgorithm();
     }
 }

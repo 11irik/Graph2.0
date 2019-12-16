@@ -59,6 +59,7 @@ public class Generator {
         return graph;
     }
 
+    //fixme
     public Graph nextTree() {
         Graph graph = new Graph(oriented, weighted);
         for (int i = 0; i < nodeCount; ++i) {
@@ -92,6 +93,7 @@ public class Generator {
         return graph;
     }
 
+    //fixme
     public Graph nextBigraph(int edgesCount) throws Exception {
         Graph graph = new Graph(oriented, weighted);
         for (int i = 0; i < nodeCount; ++i) {
@@ -145,7 +147,7 @@ public class Generator {
         return graph;
     }
 
-    public Graph nextGamil() {
+    public Graph nextHamiltonian() {
         Graph graph = new Graph(oriented, weighted);
         for (int i = 0; i < nodeCount; ++i) {
             graph.addNode(String.valueOf(i));

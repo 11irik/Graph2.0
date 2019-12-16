@@ -9,13 +9,14 @@ import java.util.Queue;
 import java.util.Random;
 
 public class GraphAdapter {
-    Graph graph;
-    ArrayList<NodeAdapter> nodes;
-    ArrayList<EdgeAdapter> edges;
-    Color defaultColor = Color.PINK;
+    private static Color defaultColor = Color.PINK;
+    private static Random random = new Random();
 
-    Random random = new Random();
-    int nodeCoordMax = 500;
+    private Graph graph;
+    private ArrayList<NodeAdapter> nodes;
+    private ArrayList<EdgeAdapter> edges;
+
+    private int nodeCoordMax = 500;
 
     public GraphAdapter() {
         graph = new Graph();
@@ -32,12 +33,17 @@ public class GraphAdapter {
         graph.getEdges().forEach(edge -> edges.add(new EdgeAdapter(edge, nodes)));
     }
 
+
+
     public void setNodeCoordMax(int nodeCoordMax) {
         this.nodeCoordMax = nodeCoordMax;
     }
 
     public GraphAdapter(GraphAdapter graph) {
         this(graph.graph);
+        nodes = new ArrayList<>();
+        edges = new ArrayList<>();
+        graph.getGraph().getEdges().forEach(edge -> edges.add(new EdgeAdapter(edge, nodes)));
     }
 
     public ArrayList<EdgeAdapter> getEdges() {
@@ -73,8 +79,6 @@ public class GraphAdapter {
             edges.add(new EdgeAdapter(a, b, weight, graph.getOriented()));
             a.setColor(defaultColor);
             b.setColor(defaultColor);
-            a = null;
-            b = null;
         } catch (Exception e) {
 
         }
@@ -85,8 +89,23 @@ public class GraphAdapter {
         edges.add(new EdgeAdapter(a, b, graph.getWeighted(), graph.getOriented()));
         a.setColor(defaultColor);
         b.setColor(defaultColor);
-        a = null;
-        b = null;
+    }
+
+    public void deleteEdge(NodeAdapter a, NodeAdapter b) {
+        graph.deleteEdge(a.getKey(), b.getKey());
+
+        edges = new ArrayList<>();
+        graph.getEdges().forEach(edge -> edges.add(new EdgeAdapter(edge, nodes)));
+        a.setColor(defaultColor);
+        b.setColor(defaultColor);
+    }
+
+    public void deleteNode(NodeAdapter a) {
+        graph.deleteNode(a.getKey());
+        nodes.remove(a);
+        edges = new ArrayList<>();
+        graph.getEdges().forEach(edge -> edges.add(new EdgeAdapter(edge, nodes)));
+        a.setColor(defaultColor);
     }
 
     public boolean addNode(String key, int x, int y) {

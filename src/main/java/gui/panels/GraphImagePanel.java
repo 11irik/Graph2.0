@@ -22,14 +22,10 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     //Graphics attributes
     private Font[] keyFont = new Font[30];
     private int nodeSize;
-    ;
+
     private double aspect;
     private int maxNodeRandom = 500;
     protected float regularWidth = 0.5f;
-
-    //Graphical Thread
-    GraphWorker graphWorker;
-    boolean drawAlg = false;
 
     //Interactive attributes
     NodeAdapter selectedNode;
@@ -40,7 +36,6 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
 
         addMouseListener(this);
         addMouseMotionListener(this);
-
 
         setBorder(BorderFactory.createEtchedBorder());
         setBackground(new Color(200, 200, 200));
@@ -55,16 +50,10 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         Graphics2D g2 = (Graphics2D) g;
 
         graph.getEdges().forEach(edge -> drawEdge(g, edge, Color.BLACK, aspect));
-        if (drawAlg) {
-            visitedEdges.forEach(edge -> drawEdge(g, edge, Color.RED, aspect));
-        }
 
         g2.setStroke(new BasicStroke(regularWidth));
         graph.getNodes().forEach(node -> drawNode(g2, (node), aspect));
-
-        //visitedNodes.forEach(node -> drawNode(g, node, Color.CYAN));
     }
-
 
     private void drawNode(Graphics g, NodeAdapter node, double aspect) {
         nodeSize = (int) aspect * maxNodeRandom / 8;
@@ -78,7 +67,6 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         g.setFont(keyFont[(int) (8 * aspect * 2)]);
         FontMetrics fontMetrics = g.getFontMetrics();
         int width = fontMetrics.stringWidth("" + node.getKey());
-        //todo magic with string
         g.drawString("" + node.getKey(), (int) (node.getX() * aspect) + (nodeSize / 8 - width) / 2, (int) (node.getY() * aspect) + nodeSize / 4);
     }
 
@@ -149,60 +137,6 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         }
     }
 
-    public void executeStart() {
-        repaint();
-        visitedEdges = new ArrayList<>();
-        visitedNodes = new ArrayList<>();
-        graphWorker = new GraphWorker(visitedNodes, visitedEdges);
-        graphWorker.execute();
-    }
-
-//    public void executeStop() {
-//        graphWorker.cancel(true);
-//    }
-
-    public void reset() {
-        visitedNodes = new ArrayList<>();
-        visitedEdges = new ArrayList<>();
-        drawAlg = false;
-        repaint();
-    }
-
-    public void update() {
-        repaint();
-
-//        Thread.sleep(1000);
-    }
-
-    class GraphWorker extends SwingWorker<Void, Void> {
-        List<NodeAdapter> visitedNodes;
-        List<EdgeAdapter> visitedEdges;
-
-        public GraphWorker(List<NodeAdapter> visitedNodes, List<EdgeAdapter> visitedEdges) {
-            this.visitedEdges = visitedEdges;
-            this.visitedNodes = visitedNodes;
-        }
-
-        @Override
-        protected Void doInBackground() {
-            Queue<Node> nodes = graph.getGraph().getSpanningComponent(graph.getNode("6").getNode());
-            NodeAdapter st = graph.getNode("6");
-            drawAlg = true;
-
-            for (Node end : nodes) {
-                NodeAdapter nd = graph.getNode(end.getKey());
-                EdgeAdapter edge = new EdgeAdapter(graph.getNode(st.getKey()), graph.getNode(end.getKey()), false, false);
-                visitedEdges.add(edge);
-                st = nd;
-                update();
-            }
-
-            drawAlg = false;
-            return null;
-        }
-
-    }
-
     private NodeAdapter selectNodeFromCoords(int x, int y) {
         NodeAdapter node = null;
         for (NodeAdapter n : graph.getNodes()) {
@@ -213,11 +147,8 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         }
         return node;
     }
-
-
     private NodeAdapter node1 = null;
     private NodeAdapter node2 = null;
-    private boolean odd = true;
 
     public void addEdge(double weight) {
         if (node1 != null && node2 != null) {
@@ -237,12 +168,28 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         }
     }
 
+    public void deleteEdge() {
+        if (node1 != null && node2 != null) {
+            graph.deleteEdge(node1, node2);
+            repaint();
+            node1 = null;
+            node2 = null;
+        }
+    }
+
+    public void deleteNode() {
+        if (node2 != null) {
+            graph.deleteNode(node2);
+            repaint();
+            node2 = null;
+        }
+    }
+
     public GraphAdapter getGraph() {
         return graph;
     }
 
     //Mouse Listener
-
     @Override
     public void mousePressed(MouseEvent e) {
         try {
@@ -272,23 +219,19 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
 
     @Override
     public void mouseMoved(MouseEvent e) {
-//        if (isChosed) {
-//            chosenNode.setX((int) (e.getX() / aspect * nodeCoordMax));
-//            chosenNode.setY((int) (e.getY() / aspect * nodeCoordMax));
-//            repaint();
-//        }
     }
-
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == 2) {
+        if (e.getClickCount() == 1) {
             if (node2 == null) {
                 node2 = selectNodeFromCoords(e.getX(), e.getY());
-                node2.setColor(Color.GREEN);
+                if(node2 != null) {
+                    node2.setColor(Color.RED);
+                }
             } else {
                 NodeAdapter temp = selectNodeFromCoords(e.getX(), e.getY());
-                if (temp != node2) {
+                if (temp != node2 && temp != null) {
                     if (node1 != null) {
                         node1.setDefaultColor();
                     }

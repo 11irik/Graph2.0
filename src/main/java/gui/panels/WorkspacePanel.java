@@ -1,8 +1,6 @@
 package gui.panels;
 
 import graph.adapters.GraphAdapter;
-import gui.popups.PopClickListener;
-import gui.popups.PopUpTest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,8 +28,5 @@ public class WorkspacePanel extends JPanel {
         c.gridheight = 1;
         c.gridwidth = 3;
         add(new GraphSettingsPanel(graph, graphImagePanel), c);
-
-        PopUpTest pop = new PopUpTest(graph);
-        addMouseListener(new PopClickListener(pop));
     }
 }

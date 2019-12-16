@@ -5,25 +5,28 @@ import graph.Node;
 import java.awt.*;
 
 public class NodeAdapter {
+    private static Color defaultColor = Color.PINK;
     private Node node;
+    private Color color;
     private int x;
     private int y;
-    private Color color = Color.PINK;
 
     public NodeAdapter(Node node, int x, int y) {
         this.node = node;
+        this.color = defaultColor;
         this.x = x;
         this.y = y;
     }
 
     public NodeAdapter(NodeAdapter node) {
         this.node = node.node;
+        this.color = node.color;
         this.x = node.x;
         this.y = node.y;
     }
 
     public void setDefaultColor() {
-        color = Color.PINK;
+        color = defaultColor;
     }
 
     public Node getNode() {

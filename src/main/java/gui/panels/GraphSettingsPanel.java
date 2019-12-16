@@ -16,8 +16,8 @@ public class GraphSettingsPanel extends JPanel {
 
         this.setLayout(new GridLayout(0, 1));
 
-        JButton refresh = new JButton("Rebuild");
-        refresh.addActionListener(new ActionListener() {
+        JButton rebuild = new JButton("Rebuild");
+        rebuild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 graph.rebuild();
@@ -63,15 +63,32 @@ public class GraphSettingsPanel extends JPanel {
             }
         });
 
+        JButton deleteEdgeButton = new JButton("Delete edge");
+        deleteEdgeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                graphImagePanel.deleteEdge();
+            }
+        });
 
-        add(refresh);
-        add(upd);
+        JButton deleteNodeButton = new JButton("Delete node");
+        deleteNodeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                graphImagePanel.deleteNode();
+            }
+        });
+
+        add(rebuild);
+        //add(upd);
         add(addNodeButton);
         add(mark);
         add(addEdgeButton);
         if (graph.getGraph().getWeighted()) {
             add(weight);
         }
+        add(deleteNodeButton);
+        add(deleteEdgeButton);
 
     }
 }
