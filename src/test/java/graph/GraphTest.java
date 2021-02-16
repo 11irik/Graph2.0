@@ -31,7 +31,9 @@ public class GraphTest {
         graph.addEdge("4", "3", 4);
         graph.addEdge("4", "2", 3);
         graph.addEdge("5", "4", 3);
+        graph.addEdge("2", "3", 4);
         graph.addEdge("5", "1", 1);
+        graph.addEdge("1", "6", 1);
 
 
         System.out.println(graph + "---Before---\n");
@@ -148,7 +150,7 @@ public class GraphTest {
 
     @Test
     public void ford() throws Exception {
-       graph.yens("5", "3", 2);
+        graph.yens("5", "3", 100);
     }
 
     @Test
@@ -157,7 +159,24 @@ public class GraphTest {
     }
 
     @Test
-    public void maxFlow() {
-        System.out.println(graph.maxFlow("1", "5"));
+    public void maxFlow() throws Exception {
+        Graph graph1 = new Graph(true, true);
+        graph1.addNode("1");
+        graph1.addNode("2");
+        graph1.addNode("3");
+        graph1.addNode("4");
+//        graph1.addNode("5");
+
+
+        graph1.addEdge("1", "2", 1);
+        graph1.addEdge("2", "4", 1);
+        graph1.addEdge("1", "3", 1);
+        graph1.addEdge("3", "2", 1);
+        graph1.addEdge("3", "4", 1);
+
+
+
+//        System.out.println(graph1.maxFlow("1", "4"));
+        System.out.println(graph1.fordFulkerson("1", "4"));
     }
 }

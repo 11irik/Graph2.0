@@ -60,6 +60,10 @@ public class Edge {
         this.flow = flow;
     }
 
+    public void incFlow(double num) {
+        this.flow += num;
+    }
+
     public double getCurrentFlow() {
         return weight - flow;
     }

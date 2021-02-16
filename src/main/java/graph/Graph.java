@@ -5,6 +5,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 
@@ -593,11 +594,26 @@ public class Graph {
 
 
     //Task IV(b)
+    private static class PathAndWay {
+        ArrayList<Node> minPath;
+        double minDistance;
+
+        public PathAndWay(ArrayList<Node> path, double minDistance) {
+            this.minPath = path;
+            this.minDistance = minDistance;
+        }
+
+        public ArrayList<Node> getMinPath() {
+            return minPath;
+        }
+
+        public double getMinDistance() {
+            return minDistance;
+        }
+    }
 
 
-    ArrayList<Node> minPath = new ArrayList<>();
-    double minDistance;
-    public void ford(String nodeStart, String nodeEnd) throws Exception {
+    public PathAndWay ford(String nodeStart, String nodeEnd) throws Exception {
         Node begin = this.getNode(nodeStart);
         Node end = this.getNode(nodeEnd);
         HashMap<Node, Double> distances = new HashMap<>();
@@ -625,8 +641,8 @@ public class Graph {
              }
         }
 
-        minDistance = distances.get(end);
-        minPath = new ArrayList<>();
+        double minDistance = distances.get(end);
+        ArrayList<Node> minPath = new ArrayList<>();
         if (distances.get(end) == inf)
             minPath.add(null);
         else {
@@ -639,28 +655,29 @@ public class Graph {
             Collections.reverse(minPath);
         }
 
-        System.out.println(minDistance);
-        System.out.println(minPath);
+        return new PathAndWay(minPath, minDistance);
     }
 
     public void yens(String a, String b, int k) throws Exception {
         Graph temp = new Graph(this, true);
+        PathAndWay first = temp.ford(a, b);
+        System.out.println(Double.toString(first.getMinDistance()) + '\n' + first.getMinPath().toString());
 
-        for (int i = 0; i < k-1; ++i) {
-            temp.ford(a, b);
+        for (int i = 0; i < k - 1; ++i) {
+            PathAndWay pAw = temp.ford(a, b);
             ArrayList<Node> minkWay = null;
             double minkDist = Double.POSITIVE_INFINITY;
+
             Graph minTemp = new Graph(temp, true);
 
-            for (int j = 0; j < minPath.size() - 1; ++j) {
-                Graph temp1 = new Graph(temp, true);
-                temp1.deleteEdge(minPath.get(i).toString(), minPath.get(i+1).toString());
-                System.out.println(temp1);
-                temp1.ford(a, b);
-                if (minkDist < minDistance) {
-                    minkDist = minDistance;
-                    minkWay = minPath;
-                    minTemp = temp1;
+            for (int j = 0; j < pAw.getMinPath().size() - 1; ++j) {
+                Graph tempMinusEdge = new Graph(temp, true);
+                tempMinusEdge.deleteEdge(pAw.getMinPath().get(j).toString(), pAw.getMinPath().get(j+1).toString());
+                PathAndWay temppAw = tempMinusEdge.ford(a, b);
+                if (minkDist > temppAw.getMinDistance()) {
+                    minkDist = temppAw.getMinDistance();
+                    minkWay = temppAw.getMinPath();
+                    minTemp = tempMinusEdge;
                 }
             }
 
@@ -717,92 +734,85 @@ public class Graph {
 
 
     //Task V
-    private int s, t;
-    private int[] d;
-    private int[] ptr;
-    private int[] q;
-    private Integer[][] c;
-    private Integer[][] f;
-    private int n;
-    private Integer INF = Integer.MAX_VALUE - 1;
+    public boolean bfs(Node src, Node dest, HashMap<Node, Node> parent){
+        //Setting nodes' parameter "used" to false
+        setNodesUsedFalse();
 
-    private boolean bfs() {
-        int qh = 0, qt = 0;
-        q[qt++] = s;
-        for (int i = 0; i < n; i++) {
-            d[i] = -1;
-        }
-        d[s] = 0;
-        while (qh < qt) {
-            int v = q[qh++];
-            for (int to = 0; to < n; ++to) {
-                if (d[to] == -1 && f[v][to] < c[v][to]) {
-                    q[qt++] = to;
-                    d[to] = d[v] + 1;
+        //Create a queue for BFS
+        Queue<Node> queue = new LinkedList<>();
+
+        //add the source node and set it used
+        queue.add(src);
+        src.setUsed(true);
+        parent.put(src, new Node("-1"));
+
+        //bfs
+        while(!queue.isEmpty()){
+            Node u = queue.poll();
+
+            for (Node node : adjacencyList.get(u).keySet()) {
+                if (!node.getUsed() && adjacencyList.get(u).get(node) > 0) {
+                    queue.add(node);
+                    //putting parent node to hashmap
+                    parent.put(node, u);
+                    node.setUsed(true);
                 }
             }
         }
-        return d[t] != -1;
+
+        //returning destination node reachability
+        return dest.getUsed();
     }
 
-    private int dfs(int v, int flow) {
-        if (flow == 0) return 0;
-        if (v == t) return flow;
-        for (int to = ptr[v]; to < n; ++to) {
-            if (d[to] != d[v] + 1) {
-                continue;
-            }
-            int pushed = dfs(to, Math.min(flow, c[v][to] - f[v][to]));
-            if (pushed != 0) {
-                f[v][to] += pushed;
-                f[to][v] -= pushed;
-                return pushed;
+    double fordFulkerson(String src, String dest)
+    {
+        //Copying original graph
+        Graph temp = new Graph(this, true);
+        //Adding zero reverse edges
+        for (Node u : adjacencyList.keySet()) {
+            for (Node v : adjacencyList.get(u).keySet()) {
+                temp.addEdge(v, u);
             }
         }
-        return 0;
-    }
 
-    private int dinic() {
-        int flow = 0;
-        for (; ; ) {
-            if (!bfs()) break;
-            else {
-                for (int i = 0; i < n; i++) ptr[i] = 0;
-                int pushed = dfs(s, INF);
-                while (pushed != 0) {
-                    flow += pushed;
-                    pushed = dfs(s, INF);
-                }
-            }
-        }
-        return flow;
-    }
-
-    public int maxFlow(String from, String to) {
-        n = adjacencyList.keySet().size() + 1;
-        d = new int[n];
-        ptr = new int[n];
-        q = new int[n];
-        s = Integer.parseInt(from);
-        t = Integer.parseInt(to);
-        c = new Integer[n][n];
-        f = new Integer[n][n];
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                c[i][j] = 0;
-                f[i][j] = 0;
-            }
-        }
+        //Creating hashmap for getting path through parents(by bfs)
+        HashMap<Node, Node> parent = new HashMap<>();
         for (Node node : adjacencyList.keySet()) {
-            for (Node adjacency : adjacencyList.get(node).keySet()) {
-                double k = adjacencyList.get(node).get(adjacency);
-                c[Integer.parseInt(node.getKey())][Integer.parseInt(adjacency.getKey())] =
-                        (int)(k);
-            }
+            parent.put(node, null);
         }
-        return dinic();
-    }
 
+        Node source = getThisNode(src);
+        Node sink = getThisNode(dest);
+        double maxFlow = 0;
+        //while exist path from source to sink
+        while (temp.bfs(source, sink, parent))
+        {
+            double pathFlow = Double.MAX_VALUE;
+
+            Node t = sink;
+            //getting maximum path flow
+            while (t != source) {
+                Node s = parent.get(t);
+                pathFlow = Math.min(pathFlow, temp.adjacencyList.get(s).get(t));
+                t = s;
+            }
+
+            // update capacities of the edges and reverse edges
+            t = sink;
+            while (t != source) {
+                Node s = parent.get(t);
+                double flow = temp.adjacencyList.get(s).get(t);
+                double backFlow = temp.adjacencyList.get(t).get(s);
+                temp.adjacencyList.get(s).put(t, flow - pathFlow);
+                temp.adjacencyList.get(t).put(s, backFlow + pathFlow);
+                t = s;
+            }
+
+            maxFlow += pathFlow;
+        }
+
+        return maxFlow;
+    }
 
     //help
     public Set<Node> getNodes() {

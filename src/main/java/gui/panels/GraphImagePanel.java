@@ -1,7 +1,5 @@
 package gui.panels;
 
-import graph.Generator;
-import graph.Node;
 import graph.adapters.EdgeAdapter;
 import graph.adapters.GraphAdapter;
 import graph.adapters.NodeAdapter;
@@ -11,8 +9,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
 
 public class GraphImagePanel extends JPanel implements MouseListener, MouseMotionListener {
     protected GraphAdapter graph;
@@ -55,19 +51,23 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         graph.getNodes().forEach(node -> drawNode(g2, (node), aspect));
     }
 
+    int shiftX = 30;
+    int shiftY = 30;
+
     private void drawNode(Graphics g, NodeAdapter node, double aspect) {
         nodeSize = (int) aspect * maxNodeRandom / 8;
+
         Graphics2D g2 = (Graphics2D) g;
 
         g2.setColor(node.getColor());
-        g.fillOval((int) (node.getX() * aspect - nodeSize / 2), (int) (node.getY() * aspect - nodeSize / 2), nodeSize, nodeSize);
+        g.fillOval((int) (node.getX() * aspect - nodeSize / 2) + shiftX, (int) (node.getY() * aspect - nodeSize / 2) + shiftY, nodeSize, nodeSize);
         g2.setColor(Color.BLACK);
-        g.drawOval((int) (node.getX() * aspect - nodeSize / 2), (int) (node.getY() * aspect - nodeSize / 2), nodeSize, nodeSize);
+        g.drawOval((int) (node.getX() * aspect - nodeSize / 2) + shiftX, (int) (node.getY() * aspect - nodeSize / 2) + shiftY, nodeSize, nodeSize);
 
         g.setFont(keyFont[(int) (8 * aspect * 2)]);
         FontMetrics fontMetrics = g.getFontMetrics();
         int width = fontMetrics.stringWidth("" + node.getKey());
-        g.drawString("" + node.getKey(), (int) (node.getX() * aspect) + (nodeSize / 8 - width) / 2, (int) (node.getY() * aspect) + nodeSize / 4);
+        g.drawString("" + node.getKey(), (int) (node.getX() * aspect) + (nodeSize / 8 - width) / 2 + shiftX, (int) (node.getY() * aspect) + nodeSize / 4 + shiftY);
     }
 
     public void drawEdge(Graphics g, EdgeAdapter edge, Color color, double aspect) {
@@ -81,10 +81,10 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
         NodeAdapter end = edge.getEnd();
 
         g2.drawLine(
-                (int) (start.getX() * aspect),
-                (int) (start.getY() * aspect),
-                (int) (end.getX() * aspect),
-                (int) (end.getY() * aspect)
+                (int) (start.getX() * aspect + shiftX),
+                (int) (start.getY() * aspect + shiftY),
+                (int) (end.getX() * aspect + shiftX),
+                (int) (end.getY() * aspect + shiftY)
         );
 
         if (edge.isWeighted()) {
@@ -140,8 +140,8 @@ public class GraphImagePanel extends JPanel implements MouseListener, MouseMotio
     private NodeAdapter selectNodeFromCoords(int x, int y) {
         NodeAdapter node = null;
         for (NodeAdapter n : graph.getNodes()) {
-            if (Math.abs(n.getX() * aspect - x) < nodeSize / 2 &&
-                    Math.abs(n.getY() * aspect - y) < nodeSize / 2) {
+            if (Math.abs(n.getX() * aspect - x + shiftX) < nodeSize / 2 &&
+                    Math.abs(n.getY() * aspect - y + shiftY) < nodeSize / 2) {
                 node = n;
             }
         }
